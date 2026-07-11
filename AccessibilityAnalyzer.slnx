@@ -3,6 +3,9 @@
     <File Path="README.md" />
     <File Path="stylecop.json" />
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Project Path="AccessibilityAnalyzer.App/AccessibilityAnalyzer.App.csproj" />
   <Project Path="AccessibilityAnalyzer.Core/AccessibilityAnalyzer.Core.csproj" />
 </Solution>
