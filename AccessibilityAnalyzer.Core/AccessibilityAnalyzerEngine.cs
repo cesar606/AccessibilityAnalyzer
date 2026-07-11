@@ -36,7 +36,10 @@ namespace AccessibilityAnalyzer.Core
                 new AccessibleNameRule(),
                 new TextAlternativeRule(),
                 new DuplicateNameRule(),
+                new ContrastRule(settings),
                 new FontSizeRule(settings),
+                new KeyboardOperabilityRule(),
+                new TargetSizeRule(settings),
             })
         {
         }

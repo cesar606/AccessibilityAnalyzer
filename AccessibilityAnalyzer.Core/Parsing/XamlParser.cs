@@ -14,7 +14,8 @@ namespace AccessibilityAnalyzer.Core.Parsing
     public class XamlParser
     {
         /// <summary>
-        /// Parses the XAML content and returns every control declared in it.
+        /// Parses the XAML content and returns every control declared in it,
+        /// preserving the parent-child relationships of the tree.
         /// </summary>
         /// <param name="xamlContent">The raw content of the XAML file.</param>
         /// <returns>A read-only list with all the controls found.</returns>
@@ -32,9 +33,24 @@ namespace AccessibilityAnalyzer.Core.Parsing
                 return elements;
             }
 
-            foreach (XElement element in document.Descendants())
+            // The map lets us link every control to its parent once all of them are converted.
+            Dictionary<XElement, XamlElement> map = new Dictionary<XElement, XamlElement>();
+
+            foreach (XElement xmlElement in document.Descendants())
             {
-                elements.Add(this.ConvertElement(element));
+                XamlElement converted = this.ConvertElement(xmlElement);
+                map[xmlElement] = converted;
+                elements.Add(converted);
+            }
+
+            foreach (KeyValuePair<XElement, XamlElement> entry in map)
+            {
+                XElement? parent = entry.Key.Parent;
+
+                if (parent is not null && map.TryGetValue(parent, out XamlElement? parentElement))
+                {
+                    entry.Value.Parent = parentElement;
+                }
             }
 
             return elements;

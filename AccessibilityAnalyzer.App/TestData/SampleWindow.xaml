@@ -36,5 +36,28 @@
 		<!-- INCORRECTE (R5): mida de lletra massa petita -->
 		<TextBlock Text="Text molt petit" FontSize="8" />
 
+		<!-- Contenidor amb fons blanc declarat -->
+		<StackPanel Background="#FFFFFF">
+
+			<!-- INCORRECTE (R4): gris clar sobre blanc, contrast molt baix -->
+			<TextBlock Text="Text de baix contrast" Foreground="#AAAAAA" />
+
+			<!-- CORRECTE (R4): negre sobre blanc, contrast maxim -->
+			<TextBlock Text="Text ben contrastat" Foreground="#000000" />
+
+			<!-- REVISIO MANUAL (R4): el color prove d'un recurs -->
+			<TextBlock Text="Color dinamic" Foreground="{StaticResource ColorText}" />
+
+			<!-- INCORRECTE (R6): boto exclos de la navegacio per teclat -->
+			<Button Content="Inaccessible" IsTabStop="False" />
+
+			<!-- INCORRECTE (R7): boto massa petit per ser polsat comodament -->
+			<Button Content="X" AutomationProperties.Name="Tancar" Width="16" Height="16" />
+
+			<!-- CORRECTE (R7): boto amb mida suficient -->
+			<Button Content="Acceptar" Width="100" Height="32" />
+
+		</StackPanel>
+
     </StackPanel>
 </Window>

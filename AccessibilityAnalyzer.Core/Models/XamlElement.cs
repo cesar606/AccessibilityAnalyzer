@@ -21,6 +21,12 @@ namespace AccessibilityAnalyzer.Core.Models
         public required int LineNumber { get; init; }
 
         /// <summary>
+        /// Gets or sets the parent control in the visual tree, or <c>null</c> for the root element.
+        /// Required to resolve inherited properties such as the background colour.
+        /// </summary>
+        public XamlElement? Parent { get; set; }
+
+        /// <summary>
         /// Gets the attributes declared on the control, indexed by their local name.
         /// </summary>
         public required IReadOnlyDictionary<string, string> Attributes { get; init; }
