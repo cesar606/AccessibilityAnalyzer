@@ -9,7 +9,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AccessibilityAnalyzer.Core\AccessibilityAnalyzer.Core.csproj" />
+    <Page Remove="TestData\SampleWindow.xaml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AccessibilityAnalyzer.Core\AccessibilityAnalyzer.Core.csproj" />
+  </ItemGroup>
+	<ItemGroup>
+		<AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="TestData\SampleWindow.xaml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 </Project>

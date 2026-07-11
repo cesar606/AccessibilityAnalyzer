@@ -19,6 +19,21 @@ namespace AccessibilityAnalyzer.App
         public MainWindow()
         {
             InitializeComponent();
+
+            // Temporary scaffolding: verifies that the analysis engine works end to end.
+            string xaml = System.IO.File.ReadAllText("TestData/SampleWindow.xaml");
+
+            AccessibilityAnalyzer.Core.AccessibilityAnalyzerEngine engine =
+                new AccessibilityAnalyzer.Core.AccessibilityAnalyzerEngine();
+
+            var issues = engine.Analyse(xaml);
+
+            System.Diagnostics.Debug.WriteLine($"--- Incidencies detectades: {issues.Count} ---");
+
+            foreach (var issue in issues)
+            {
+                System.Diagnostics.Debug.WriteLine(issue.ToString());
+            }
         }
     }
 }

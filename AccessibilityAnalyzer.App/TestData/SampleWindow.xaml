@@ -1,0 +1,40 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Finestra de prova">
+    <StackPanel>
+
+        <!-- CORRECTE: te nom accessible explicit -->
+        <Button AutomationProperties.Name="Cercar" Content="{StaticResource IconaCerca}" />
+
+        <!-- CORRECTE: el contingut textual actua com a nom accessible -->
+        <Button Content="Desar" />
+
+        <!-- INCORRECTE (R1): boto nomes amb icona, sense nom accessible -->
+        <Button Content="{StaticResource IconaEsborrar}" />
+
+        <!-- INCORRECTE (R1): camp de text sense etiqueta associada -->
+        <TextBox Width="200" />
+
+        <!-- INCORRECTE (R1): desplegable sense nom accessible -->
+        <ComboBox Width="150" />
+
+        <!-- CORRECTE: casella amb contingut textual -->
+        <CheckBox Content="Accepto les condicions" />
+		<!-- INCORRECTE (R2): imatge sense alternativa textual -->
+		<Image Source="logo.png" Width="100" />
+
+		<!-- CORRECTE (R2): imatge decorativa, exclosa expressament -->
+		<Image Source="separador.png" AutomationProperties.AccessibilityView="Raw" />
+
+		<!-- INCORRECTE (R3): nom accessible buit -->
+		<Button AutomationProperties.Name="" Content="Enviar" />
+
+		<!-- INCORRECTE (R3): noms duplicats en dos controls diferents -->
+		<Button AutomationProperties.Name="Opcions" Content="A" />
+		<Button AutomationProperties.Name="Opcions" Content="B" />
+
+		<!-- INCORRECTE (R5): mida de lletra massa petita -->
+		<TextBlock Text="Text molt petit" FontSize="8" />
+
+    </StackPanel>
+</Window>
