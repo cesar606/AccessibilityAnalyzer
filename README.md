@@ -1,6 +1,6 @@
 # Avaluador estàtic d'accessibilitat per a interfícies WPF/XAML
 
-Treball de Fi de Grau — Grau en Enginyeria Informàtica
+Treball de Fi de Grau — Grau en Enginyeria Informàtica  
 Escola Politècnica Superior, Universitat de Lleida
 
 **Autor:** Cesar Gallardo Rodriguez
@@ -13,7 +13,7 @@ Eina d'escriptori que analitza **estàticament** fitxers XAML d'aplicacions WPF 
 
 A diferència de les solucions existents en l'àmbit de l'escriptori Windows —que inspeccionen l'aplicació en execució a través de l'API *UI Automation*—, aquesta eina desplaça la detecció al **codi font** i al **moment del desenvolupament**, seguint el principi *shift-left*.
 
-Les incidències detectades es classifiquen segons el grau de confiança de la detecció (error, advertiment o revisió manual) i són traçables al marc normatiu europeu: **WCAG 2.2**, **WCAG2ICT** i **EN 301 549**.
+Les incidències detectades es classifiquen segons el grau de confiança de la detecció i són traçables al marc normatiu europeu: **WCAG 2.2**, **WCAG2ICT** i **EN 301 549**.
 
 ---
 
@@ -31,9 +31,45 @@ Les incidències detectades es classifiquen segons el grau de confiança de la d
 
 ---
 
-## Arquitectura
+## Les tres categories d'incidència
 
-El projecte se separa en dos mòduls independents:
+L'anàlisi estàtica no pot comprovar tots els criteris d'accessibilitat. En comptes d'ignorar-ho o de reportar falsos positius, l'eina distingeix tres categories segons el **grau de confiança** de la detecció:
+
+| Categoria | Significat | Exemple |
+|-----------|------------|---------|
+| **Error** | La comprovació és determinista: l'incompliment és cert. | `Foreground="#AAAAAA"` sobre fons blanc → contrast 2.32:1 |
+| **Advertiment** | Molt probablement és un problema, però convé revisar-ho. | Dos controls amb el mateix nom accessible |
+| **Revisió manual** | El valor es resol en temps d'execució i l'eina no pot decidir-ho. | `Foreground="{StaticResource ColorText}"` |
+
+Aquesta distinció és deliberada: una eina que no reconeix els seus propis límits transmet una **falsa sensació de compliment**.
+
+---
+
+## Càlcul de la puntuació
+
+La puntuació va de 0 a 100 i es calcula **només sobre allò que s'ha pogut verificar estàticament**.
+
+**Ponderació per severitat.** Cada incidència penalitza segons el seu impacte real sobre l'usuari:
+
+| Severitat | Penalització | Raonament |
+|-----------|--------------|-----------|
+| Greu | 10 | Pot **impedir** l'accés a la funcionalitat (p. ex. un botó invisible per a un lector de pantalla). |
+| Moderada | 4 | **Dificulta** l'ús sense impedir-lo (p. ex. lletra massa petita). |
+| Lleu | 1 | Molèstia menor. |
+
+**Penalització relativa a la mida del fitxer.** Deu errors en una finestra de 12 controls són molt més greus que deu errors en una aplicació de 500. El divisor representa el pitjor escenari possible: que **tots** els controls tinguessin un error greu.
+
+```
+puntuació = 100 × (1 − penalització_total / (nombre_de_controls × 10))
+```
+
+**Les incidències de revisió manual NO penalitzen.** Penalitzar-les seria injust (poden ser correctes) i ignorar-les seria perillós (amagaria els límits de l'anàlisi). Per això es mostren **sempre al costat de la puntuació**, amb un avís explícit.
+
+> La puntuació mesura *el que s'ha pogut verificar*; la revisió manual mesura *el que queda per verificar*. Barrejar-les falsejaria totes dues.
+
+---
+
+## Arquitectura
 
 ```
 AccessibilityAnalyzer/
@@ -41,7 +77,7 @@ AccessibilityAnalyzer/
 │   ├── Models/                     Model de domini
 │   ├── Parsing/                    Lectura i recorregut del XAML
 │   ├── Rules/                      Implementació de les regles R1–R7
-│   └── Analysis/                   Càlculs auxiliars (contrast de color)
+│   └── Analysis/                   Càlcul de contrast i de puntuació
 │
 └── AccessibilityAnalyzer.App/      Interfície d'usuari (aplicació WPF)
     └── TestData/                   Fitxers XAML de prova
@@ -60,28 +96,24 @@ La dependència és unidireccional: `App → Core`. El motor no sap res de la in
 | Component | Responsabilitat |
 |-----------|-----------------|
 | `XamlParser` | Converteix el fitxer XAML en un arbre de controls, conservant la jerarquia i el número de línia de cada element. |
-| `IAccessibilityRule` | Contracte comú de totes les regles. Afegir una regla nova consisteix a crear una classe que l'implementi. |
-| `AccessibilityAnalyzerEngine` | Coordina l'anàlisi: invoca el parser i aplica totes les regles actives. |
-| `AnalysisSettings` | Llindars configurables (mida mínima de lletra, ràtio de contrast, mida mínima de l'objectiu). |
-| `ColorUtils` | Càlcul de luminància relativa i ràtio de contrast segons la fórmula de WCAG 2.2. |
+| `IAccessibilityRule` | Contracte comú de totes les regles. Afegir una regla nova consisteix a crear una classe que l'implementi, sense tocar el motor. |
+| `AccessibilityAnalyzerEngine` | Coordina l'anàlisi: invoca el parser, aplica les regles i genera l'informe. |
+| `AnalysisReport` | Resultat complet: incidències, comptadors per categoria i puntuació. |
+| `ScoreCalculator` | Càlcul de la puntuació ponderada. |
+| `ColorUtils` | Luminància relativa i ràtio de contrast segons la fórmula de WCAG 2.2. |
+| `AnalysisSettings` | Llindars configurables (mida de lletra, ràtio de contrast, mida de l'objectiu). |
 
 ---
 
 ## Decisions de disseny
 
-**Anàlisi estàtica sobre XML.** XAML és, en essència, un document XML, de manera que es recorre amb `System.Xml.Linq` sense executar l'aplicació. No calia implementar cap analitzador lèxic propi.
+**Anàlisi estàtica sobre XML.** XAML és, en essència, un document XML, de manera que es recorre amb `System.Xml.Linq` sense executar l'aplicació. L'aportació del treball són les **regles d'accessibilitat**, no el *parsing*.
 
-**Tres categories d'incidència.** L'anàlisi estàtica no pot comprovar tots els criteris d'accessibilitat. En comptes d'ignorar-ho o de reportar falsos positius, l'eina distingeix:
+**Severitat i categoria són eixos independents.** La severitat mesura l'impacte sobre l'usuari; la categoria, la confiança de la detecció. Un mateix problema greu pot ser un `Error` (si els colors són literals) o `RevisioManual` (si depenen d'un tema).
 
-- **Error** — la comprovació és determinista i l'incompliment és cert.
-- **Advertiment** — molt probablement és un problema, però convé revisar-ho.
-- **Revisió manual** — el valor es resol en temps d'execució (temes, *bindings*, recursos) i l'anàlisi estàtica no pot decidir-ho.
+**Resolució del fons heretat.** Un control sense `Background` explícit hereta el del seu contenidor. El parser reconstrueix la jerarquia pare-fill perquè la regla de contrast pugui pujar per l'arbre fins a trobar qui declara el fons.
 
-Aquesta distinció evita transmetre una falsa sensació de compliment, un problema habitual en les eines d'avaluació automàtica.
-
-**Severitat i categoria són eixos independents.** La severitat mesura l'impacte sobre l'usuari; la categoria, la confiança de la detecció. Un mateix problema greu pot ser un error o requerir revisió manual segons si els valors es poden resoldre estàticament.
-
-**Llindars configurables.** Els valors per defecte són els que exigeix la normativa (12 px de lletra, ràtio 4.5:1, objectius de 24×24 px), però l'usuari pot ajustar-los.
+**Llindars configurables.** Els valors per defecte són els que exigeix la normativa (12 px de lletra, ràtio 4.5:1, objectius de 24×24 px), però es poden ajustar.
 
 ---
 
@@ -107,7 +139,7 @@ Aquesta distinció evita transmetre una falsa sensació de compliment, un proble
 - [x] Parser de XAML amb jerarquia i informació de línia
 - [x] Regles R1–R7 del catàleg
 - [x] Llindars configurables
-- [ ] Model de l'informe i puntuació
+- [x] Model de l'informe i càlcul de puntuació
 - [ ] Interfície d'auditoria
 - [ ] Exportació de l'informe
 - [ ] Conjunt de casos de prova i validació
