@@ -2,8 +2,7 @@
 
 namespace AccessibilityAnalyzer.Core
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    using AccessibilityAnalyzer.Core.Analysis;
     using AccessibilityAnalyzer.Core.Models;
     using AccessibilityAnalyzer.Core.Parsing;
     using AccessibilityAnalyzer.Core.Rules;
@@ -72,6 +71,37 @@ namespace AccessibilityAnalyzer.Core
             }
 
             return issues.OrderBy(issue => issue.LineNumber).ToList();
+        }
+
+        /// <summary>
+        /// Analyses the given XAML content and produces the complete report.
+        /// </summary>
+        /// <param name="xamlContent">The raw content of the XAML file.</param>
+        /// <param name="fileName">The name of the file being analysed.</param>
+        /// <returns>The report with the issues, the counters and the score.</returns>
+        public AnalysisReport GenerateReport(string xamlContent, string fileName)
+        {
+            IReadOnlyList<XamlElement> elements = this._parser.Parse(xamlContent);
+
+            List<AccessibilityIssue> issues = new List<AccessibilityIssue>();
+
+            foreach (IAccessibilityRule rule in this._rules)
+            {
+                issues.AddRange(rule.Analyse(elements));
+            }
+
+            IReadOnlyList<AccessibilityIssue> ordered = issues
+                .OrderBy(issue => issue.LineNumber)
+                .ToList();
+
+            return new AnalysisReport
+            {
+                FileName = fileName,
+                Issues = ordered,
+                AnalysedElements = elements.Count,
+                Score = ScoreCalculator.Calculate(ordered, elements.Count),
+                Timestamp = System.DateTime.Now,
+            };
         }
     }
 }

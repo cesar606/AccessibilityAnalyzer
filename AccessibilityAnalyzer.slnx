@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Elementos de la solución/">
+    <File Path="README.md" />
     <File Path="stylecop.json" />
   </Folder>
   <Project Path="AccessibilityAnalyzer.App/AccessibilityAnalyzer.App.csproj" />

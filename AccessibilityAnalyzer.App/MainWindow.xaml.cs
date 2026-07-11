@@ -1,38 +1,57 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿// Treball de Fi de Grau - Cesar Gallardo Rodriguez
 
 namespace AccessibilityAnalyzer.App
 {
+    using System.Diagnostics;
+    using System.IO;
+    using System.Windows;
+    using AccessibilityAnalyzer.Core;
+    using AccessibilityAnalyzer.Core.Models;
+
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainWindow.
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Initialises a new instance of the <see cref="MainWindow"/> class.
+        /// </summary>
         public MainWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+            this.RunTemporaryAnalysis();
+        }
 
-            // Temporary scaffolding: verifies that the analysis engine works end to end.
-            string xaml = System.IO.File.ReadAllText("TestData/SampleWindow.xaml");
+        /// <summary>
+        /// Temporary scaffolding used to verify the analysis engine end to end.
+        /// It will be replaced by the audit interface.
+        /// </summary>
+        private void RunTemporaryAnalysis()
+        {
+            string xaml = File.ReadAllText("TestData/SampleWindow.xaml");
 
-            AccessibilityAnalyzer.Core.AccessibilityAnalyzerEngine engine =
-                new AccessibilityAnalyzer.Core.AccessibilityAnalyzerEngine();
+            AccessibilityAnalyzerEngine engine = new AccessibilityAnalyzerEngine();
+            AnalysisReport report = engine.GenerateReport(xaml, "SampleWindow.xaml");
 
-            var issues = engine.Analyse(xaml);
+            Debug.WriteLine("========================================");
+            Debug.WriteLine($"Fitxer:      {report.FileName}");
+            Debug.WriteLine($"Controls:    {report.AnalysedElements}");
+            Debug.WriteLine($"PUNTUACIO:   {report.Score}%");
+            Debug.WriteLine("----------------------------------------");
+            Debug.WriteLine($"Errors:            {report.ErrorCount}");
+            Debug.WriteLine($"Advertiments:      {report.WarningCount}");
+            Debug.WriteLine($"Revisio manual:    {report.ManualReviewCount}  (no afecta la puntuacio)");
+            Debug.WriteLine("========================================");
 
-            System.Diagnostics.Debug.WriteLine($"--- Incidencies detectades: {issues.Count} ---");
-
-            foreach (var issue in issues)
+            foreach (var group in report.GroupByRule())
             {
-                System.Diagnostics.Debug.WriteLine(issue.ToString());
+                Debug.WriteLine(string.Empty);
+                Debug.WriteLine($"[{group.Key}] {group.Value.Count} incidencia/es:");
+
+                foreach (AccessibilityIssue issue in group.Value)
+                {
+                    Debug.WriteLine($"   linia {issue.LineNumber}: {issue.Message}");
+                }
             }
         }
     }
