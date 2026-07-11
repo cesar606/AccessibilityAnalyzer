@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="AccessibilityAnalyzer.App/AccessibilityAnalyzer.App.csproj" />
   <Project Path="AccessibilityAnalyzer.Core/AccessibilityAnalyzer.Core.csproj" />
 </Solution>
