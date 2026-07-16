@@ -2,25 +2,44 @@
 
 namespace AccessibilityAnalyzer.App
 {
+    using AccessibilityAnalyzer.Core.Models;
+    using AccessibilityAnalyzer.Core.Rules;
     using System.Globalization;
     using System.Windows;
-    using AccessibilityAnalyzer.Core.Models;
+    using System.Windows.Controls;
+    using System.Collections.Generic;
+    using System.Windows.Controls;
+    using AccessibilityAnalyzer.Core.Rules;
 
     /// <summary>
     /// Dialog that lets the user adjust the configurable analysis thresholds.
     /// </summary>
     public partial class SettingsWindow : Window
     {
+        private readonly List<CheckBox> _ruleCheckBoxes = new List<CheckBox>();
+
         /// <summary>
         /// Initialises a new instance of the <see cref="SettingsWindow"/> class.
         /// </summary>
         /// <param name="settings">The current settings to edit.</param>
-        public SettingsWindow(AnalysisSettings settings)
+        /// <param name="rules">The available rules.</param>
+        /// <param name="disabledRuleIds">The identifiers of the rules currently disabled.</param>
+        public SettingsWindow(
+            AnalysisSettings settings,
+            IReadOnlyList<IAccessibilityRule> rules,
+            ISet<string> disabledRuleIds)
         {
             this.InitializeComponent();
             this.Settings = settings;
+            this.DisabledRuleIds = disabledRuleIds;
             this.LoadValues(settings);
+            this.BuildRuleList(rules, disabledRuleIds);
         }
+
+        /// <summary>
+        /// Gets the identifiers of the rules the user has disabled.
+        /// </summary>
+        public ISet<string> DisabledRuleIds { get; private set; }
 
         /// <summary>
         /// Gets the settings resulting from the dialog.
@@ -75,6 +94,18 @@ namespace AccessibilityAnalyzer.App
                 MinimumTargetSize = targetSize,
             };
 
+            HashSet<string> disabled = new HashSet<string>();
+
+            foreach (CheckBox checkBox in this._ruleCheckBoxes)
+            {
+                if (checkBox.IsChecked != true && checkBox.Tag is string ruleId)
+                {
+                    disabled.Add(ruleId);
+                }
+            }
+
+            this.DisabledRuleIds = disabled;
+
             this.DialogResult = true;
         }
 
@@ -88,6 +119,32 @@ namespace AccessibilityAnalyzer.App
         {
             return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value)
                 && value > 0;
+        }
+
+        /// <summary>
+        /// Builds one checkbox per rule, checked when the rule is enabled.
+        /// </summary>
+        /// <param name="rules">The available rules.</param>
+        /// <param name="disabledRuleIds">The identifiers of the disabled rules.</param>
+        private void BuildRuleList(IReadOnlyList<IAccessibilityRule> rules, ISet<string> disabledRuleIds)
+        {
+            foreach (IAccessibilityRule rule in rules)
+            {
+                CheckBox checkBox = new CheckBox
+                {
+                    Content = $"{rule.Id} — {rule.Name}",
+                    Tag = rule.Id,
+                    IsChecked = !disabledRuleIds.Contains(rule.Id),
+                    Margin = new Thickness(0, 4, 0, 4),
+                    FontSize = 13,
+                };
+
+                System.Windows.Automation.AutomationProperties.SetName(
+                    checkBox, $"Activar la regla {rule.Id}: {rule.Name}");
+
+                this._ruleCheckBoxes.Add(checkBox);
+                this.RulesList.Items.Add(checkBox);
+            }
         }
     }
 }

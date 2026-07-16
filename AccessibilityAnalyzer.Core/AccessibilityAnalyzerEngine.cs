@@ -83,8 +83,12 @@ namespace AccessibilityAnalyzer.Core
         /// </summary>
         /// <param name="xamlContent">The raw content of the XAML file.</param>
         /// <param name="fileName">The name of the file being analysed.</param>
+        /// <param name="disabledRuleIds">The identifiers of the rules to skip, if any.</param>
         /// <returns>The report with the issues, the counters and the score.</returns>
-        public AnalysisReport GenerateReport(string xamlContent, string fileName)
+        public AnalysisReport GenerateReport(
+            string xamlContent,
+            string fileName,
+            ISet<string>? disabledRuleIds = null)
         {
             IReadOnlyList<XamlElement> elements = this._parser.Parse(xamlContent);
 
@@ -92,6 +96,11 @@ namespace AccessibilityAnalyzer.Core
 
             foreach (IAccessibilityRule rule in this._rules)
             {
+                if (disabledRuleIds is not null && disabledRuleIds.Contains(rule.Id))
+                {
+                    continue;
+                }
+
                 issues.AddRange(rule.Analyse(elements));
             }
 

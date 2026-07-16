@@ -23,6 +23,7 @@ namespace AccessibilityAnalyzer.App
         private AccessibilityAnalyzerEngine _engine;
         private AnalysisSettings? _settings;
         private AnalysisReport? _currentReport;
+        private ISet<string> _disabledRuleIds = new HashSet<string>();
 
         /// <summary>
         /// Initialises a new instance of the <see cref="MainWindow"/> class.
@@ -98,7 +99,7 @@ namespace AccessibilityAnalyzer.App
                 string content = File.ReadAllText(path);
                 string fileName = Path.GetFileName(path);
 
-                AnalysisReport report = this._engine.GenerateReport(content, fileName);
+                AnalysisReport report = this._engine.GenerateReport(content, fileName, this._disabledRuleIds);
 
                 this.DisplayReport(report);
             }
@@ -336,7 +337,7 @@ namespace AccessibilityAnalyzer.App
         /// <param name="e">The event data.</param>
         private void OnSettingsClick(object sender, RoutedEventArgs e)
         {
-            SettingsWindow dialog = new SettingsWindow(this._settings)
+            SettingsWindow dialog = new SettingsWindow(this._settings, this._engine.Rules, this._disabledRuleIds)
             {
                 Owner = this,
             };
@@ -344,9 +345,9 @@ namespace AccessibilityAnalyzer.App
             if (dialog.ShowDialog() == true)
             {
                 this._settings = dialog.Settings;
+                this._disabledRuleIds = dialog.DisabledRuleIds;
                 this._engine = new AccessibilityAnalyzerEngine(this._settings);
 
-                // If a file is already loaded, re-analyse it with the new thresholds.
                 if (this._currentReport is not null)
                 {
                     MessageBox.Show(
