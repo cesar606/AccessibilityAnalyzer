@@ -43,6 +43,18 @@
                         BorderThickness="0"
                         Margin="20,0,0,0"
                         Cursor="Hand" />
+				
+				<Button x:Name="SettingsButton"
+                        Content="Configuració"
+                        AutomationProperties.Name="Obrir la configuració de l'anàlisi"
+                        Click="OnSettingsClick"
+                        Padding="16,10"
+                        FontSize="14"
+                        Background="#555555"
+                        Foreground="#FFFFFF"
+                        BorderThickness="0"
+                        Margin="10,0,0,0"
+                        Cursor="Hand" />
 
                 <TextBlock x:Name="FileNameText"
                            Text="Cap fitxer carregat"

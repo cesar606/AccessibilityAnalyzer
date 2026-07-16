@@ -16,6 +16,11 @@ namespace AccessibilityAnalyzer.Core
         private readonly IReadOnlyList<IAccessibilityRule> _rules;
 
         /// <summary>
+        /// Gets the rules available in this engine.
+        /// </summary>
+        public IReadOnlyList<IAccessibilityRule> Rules => this._rules;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AccessibilityAnalyzerEngine"/> class.
         /// with the default set of rules and settings.
         /// </summary>

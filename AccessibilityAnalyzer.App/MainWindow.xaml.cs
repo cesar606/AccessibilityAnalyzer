@@ -20,7 +20,8 @@ namespace AccessibilityAnalyzer.App
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly AccessibilityAnalyzerEngine _engine;
+        private AccessibilityAnalyzerEngine _engine;
+        private AnalysisSettings? _settings;
         private AnalysisReport? _currentReport;
 
         /// <summary>
@@ -29,7 +30,8 @@ namespace AccessibilityAnalyzer.App
         public MainWindow()
         {
             this.InitializeComponent();
-            this._engine = new AccessibilityAnalyzerEngine();
+            this._settings = new AnalysisSettings();
+            this._engine = new AccessibilityAnalyzerEngine(this._settings);
         }
 
         /// <summary>
@@ -285,7 +287,7 @@ namespace AccessibilityAnalyzer.App
         /// <param name="e">The event data.</param>
         private void OnExportClick(object sender, RoutedEventArgs e)
         {
-            if (this._currentReport is null)
+            if (this._settings is null)
             {
                 return;
             }
@@ -323,6 +325,36 @@ namespace AccessibilityAnalyzer.App
                     "Error d'escriptura",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
+            }
+        }
+
+        /// <summary>
+        /// Opens the settings dialog and, if accepted, rebuilds the engine so that the
+        /// new thresholds are applied to the following analyses.
+        /// </summary>
+        /// <param name="sender">The control that raised the event.</param>
+        /// <param name="e">The event data.</param>
+        private void OnSettingsClick(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow dialog = new SettingsWindow(this._settings)
+            {
+                Owner = this,
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                this._settings = dialog.Settings;
+                this._engine = new AccessibilityAnalyzerEngine(this._settings);
+
+                // If a file is already loaded, re-analyse it with the new thresholds.
+                if (this._currentReport is not null)
+                {
+                    MessageBox.Show(
+                        "La configuració s'ha actualitzat. Torna a analitzar el fitxer per aplicar-la.",
+                        "Configuració desada",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
             }
         }
     }
