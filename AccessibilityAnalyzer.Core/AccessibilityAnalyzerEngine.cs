@@ -6,6 +6,7 @@ namespace AccessibilityAnalyzer.Core
     using AccessibilityAnalyzer.Core.Models;
     using AccessibilityAnalyzer.Core.Parsing;
     using AccessibilityAnalyzer.Core.Rules;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Coordinates the analysis: parses the XAML file and applies every enabled rule.
@@ -116,6 +117,47 @@ namespace AccessibilityAnalyzer.Core
                 AnalysedElements = elements.Count,
                 Score = ScoreCalculator.Calculate(ordered, elements.Count),
                 Timestamp = System.DateTime.Now,
+            };
+        }
+
+        /// <summary>
+        /// Analyses every XAML file in a folder and produces an aggregated report.
+        /// </summary>
+        /// <param name="folderPath">The path of the folder to analyse.</param>
+        /// <param name="recursive">Whether to include sub-folders.</param>
+        /// <param name="disabledRuleIds">The identifiers of the rules to skip, if any.</param>
+        /// <returns>The aggregated report of the folder.</returns>
+        public FolderAnalysisReport GenerateFolderReport(
+            string folderPath,
+            bool recursive = true,
+            ISet<string>? disabledRuleIds = null)
+        {
+            System.IO.SearchOption option = recursive
+                ? System.IO.SearchOption.AllDirectories
+                : System.IO.SearchOption.TopDirectoryOnly;
+
+            string[] files = System.IO.Directory.GetFiles(folderPath, "*.xaml", option);
+
+            List<AnalysisReport> reports = new List<AnalysisReport>();
+
+            foreach (string file in files)
+            {
+                try
+                {
+                    string content = System.IO.File.ReadAllText(file);
+                    reports.Add(this.GenerateReport(content, System.IO.Path.GetFileName(file), disabledRuleIds));
+                }
+                catch (System.Xml.XmlException)
+                {
+                    // A malformed file is skipped rather than aborting the whole folder analysis.
+                    continue;
+                }
+            }
+
+            return new FolderAnalysisReport
+            {
+                FolderPath = folderPath,
+                FileReports = reports,
             };
         }
     }

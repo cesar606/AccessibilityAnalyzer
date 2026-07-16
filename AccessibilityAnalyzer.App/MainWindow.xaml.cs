@@ -89,6 +89,39 @@ namespace AccessibilityAnalyzer.App
         }
 
         /// <summary>
+        /// Lets the user choose a folder and analyses every XAML file inside it.
+        /// </summary>
+        /// <param name="sender">The control that raised the event.</param>
+        /// <param name="e">The event data.</param>
+        private void OnLoadFolderClick(object sender, RoutedEventArgs e)
+        {
+            OpenFolderDialog dialog = new OpenFolderDialog
+            {
+                Title = "Selecciona una carpeta amb fitxers XAML",
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            FolderAnalysisReport folderReport =
+                this._engine.GenerateFolderReport(dialog.FolderName, true, this._disabledRuleIds);
+
+            if (folderReport.FileCount == 0)
+            {
+                MessageBox.Show(
+                    "No s'ha trobat cap fitxer XAML en aquesta carpeta.",
+                    "Sense resultats",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            this.DisplayFolderReport(folderReport);
+        }
+
+        /// <summary>
         /// Analyses the given file and displays the resulting report.
         /// </summary>
         /// <param name="path">The full path of the file to analyse.</param>
@@ -147,6 +180,85 @@ namespace AccessibilityAnalyzer.App
                 : string.Empty;
 
             this.RenderIssues(report);
+        }
+
+        /// <summary>
+        /// Displays the aggregated result of analysing a folder.
+        /// </summary>
+        /// <param name="report">The folder report to display.</param>
+        private void DisplayFolderReport(FolderAnalysisReport report)
+        {
+            // The export button targets a single report, so it is disabled for folders.
+            this._currentReport = null;
+            this.ExportButton.IsEnabled = false;
+
+            this.FileNameText.Text = $"{report.FileCount} fitxers analitzats";
+            this.Gauge.Score = report.AverageScore;
+
+            this.ErrorCountText.Text = FormatCount(report.TotalErrors, "error", "errors");
+            this.WarningCountText.Text = FormatCount(report.TotalWarnings, "advertiment", "advertiments");
+            this.ManualCountText.Text = FormatCount(report.TotalManualReview, "revisió manual", "revisions manuals");
+
+            this.ElementCountText.Text = $"Puntuació mitjana de {report.FileCount} fitxers";
+            this.ManualWarningText.Text = report.TotalManualReview > 0
+                ? "Les revisions manuals no es tenen en compte en la puntuació."
+                : string.Empty;
+
+            this.RenderFileRanking(report);
+        }
+
+        /// <summary>
+        /// Renders the files ranked from the lowest score to the highest.
+        /// </summary>
+        /// <param name="report">The folder report whose files must be listed.</param>
+        private void RenderFileRanking(FolderAnalysisReport report)
+        {
+            this.IssuesPanel.Children.Clear();
+
+            this.IssuesPanel.Children.Add(new TextBlock
+            {
+                Text = "Fitxers ordenats per puntuació (de menor a major)",
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(0x1F, 0x38, 0x64)),
+                Margin = new Thickness(0, 0, 0, 12),
+            });
+
+            foreach (AnalysisReport fileReport in report.RankByScore())
+            {
+                Color scoreColor = fileReport.Score >= 80
+                    ? Color.FromRgb(0x1E, 0x7E, 0x45)
+                    : fileReport.Score >= 50 ? Color.FromRgb(0x8A, 0x4A, 0x10) : Color.FromRgb(0xA5, 0x28, 0x1B);
+
+                StackPanel row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 6) };
+
+                row.Children.Add(new TextBlock
+                {
+                    Text = $"{fileReport.Score}%",
+                    FontSize = 14,
+                    FontWeight = FontWeights.Bold,
+                    Foreground = new SolidColorBrush(scoreColor),
+                    Width = 55,
+                });
+
+                row.Children.Add(new TextBlock
+                {
+                    Text = fileReport.FileName,
+                    FontSize = 14,
+                    Foreground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33)),
+                    VerticalAlignment = VerticalAlignment.Center,
+                });
+
+                row.Children.Add(new TextBlock
+                {
+                    Text = $"  ({fileReport.ErrorCount} errors, {fileReport.WarningCount} advert.)",
+                    FontSize = 12,
+                    Foreground = new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88)),
+                    VerticalAlignment = VerticalAlignment.Center,
+                });
+
+                this.IssuesPanel.Children.Add(row);
+            }
         }
 
         /// <summary>

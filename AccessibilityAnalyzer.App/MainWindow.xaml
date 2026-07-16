@@ -31,6 +31,18 @@
                         BorderThickness="0"
                         Cursor="Hand" />
 
+				<Button x:Name="LoadFolderButton"
+                        Content="Analitzar carpeta"
+                        AutomationProperties.Name="Analitzar tots els fitxers XAML d'una carpeta"
+                        Click="OnLoadFolderClick"
+                        Padding="16,10"
+                        FontSize="14"
+                        Background="#2E5496"
+                        Foreground="#FFFFFF"
+                        BorderThickness="0"
+                        Margin="10,0,0,0"
+                        Cursor="Hand" />
+
                 <Button x:Name="ExportButton"
                         Content="Exportar informe HTML"
                         AutomationProperties.Name="Exportar l'informe en format HTML"
