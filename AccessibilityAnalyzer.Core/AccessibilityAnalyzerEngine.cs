@@ -44,6 +44,7 @@ namespace AccessibilityAnalyzer.Core
                 new FontSizeRule(settings),
                 new KeyboardOperabilityRule(),
                 new TargetSizeRule(settings),
+                new ColorDistinctionRule(),
             })
         {
         }

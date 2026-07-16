@@ -1,7 +1,7 @@
 # Avaluador estàtic d'accessibilitat per a interfícies WPF/XAML
 
-Treball de Fi de Grau — Grau en Enginyeria Informàtica  
-Escola Politècnica Superior, Universitat de Lleida
+Treball de Fi de Grau — Grau en Enginyeria Informàtica (Menció en Tecnologies de la Informació)  
+Escola Politècnica Superior, Universitat de Lleida — Campus Igualada-UdL
 
 **Autor:** Cesar Gallardo Rodriguez
 
@@ -28,6 +28,9 @@ Les incidències detectades es classifiquen segons el grau de confiança de la d
 | R5 | Mida de lletra petita | 1.4.4 (AA) | Moderada |
 | R6 | Operabilitat per teclat | 2.1.1 / 2.4.3 (A) | Greu / Moderada |
 | R7 | Mida de l'objectiu insuficient | 2.5.8 (AA) | Moderada |
+| R8 | Colors indistingibles per daltonisme | 1.4.1 (A) | Moderada |
+
+La regla **R8** simula els principals tipus de daltonisme (protanopia, deuteranopia i tritanopia) mitjançant matrius de transformació de color i detecta els parells de colors que es tornen indistingibles. Es classifica sempre com a *revisió manual*, ja que l'eina pot determinar que dos colors es confonen, però no si s'utilitzen per transmetre informació.
 
 ---
 
@@ -39,7 +42,7 @@ L'anàlisi estàtica no pot comprovar tots els criteris d'accessibilitat. En com
 |-----------|------------|---------|
 | **Error** | La comprovació és determinista: l'incompliment és cert. | `Foreground="#AAAAAA"` sobre fons blanc → contrast 2.32:1 |
 | **Advertiment** | Molt probablement és un problema, però convé revisar-ho. | Dos controls amb el mateix nom accessible |
-| **Revisió manual** | El valor es resol en temps d'execució i l'eina no pot decidir-ho. | `Foreground="{StaticResource ColorText}"` |
+| **Revisió manual** | El valor o el seu significat es resolen fora de l'anàlisi estàtica. | `Foreground="{StaticResource ColorText}"` · colors confusos per daltonisme |
 
 Aquesta distinció és deliberada: una eina que no reconeix els seus propis límits transmet una **falsa sensació de compliment**.
 
@@ -53,19 +56,19 @@ La puntuació va de 0 a 100 i es calcula **només sobre allò que s'ha pogut ver
 
 | Severitat | Penalització | Raonament |
 |-----------|--------------|-----------|
-| Greu | 10 | Pot **impedir** l'accés a la funcionalitat (p. ex. un botó invisible per a un lector de pantalla). |
-| Moderada | 4 | **Dificulta** l'ús sense impedir-lo (p. ex. lletra massa petita). |
+| Greu | 10 | Pot **impedir** l'accés a la funcionalitat. |
+| Moderada | 4 | **Dificulta** l'ús sense impedir-lo. |
 | Lleu | 1 | Molèstia menor. |
 
-**Penalització relativa a la mida del fitxer.** Deu errors en una finestra de 12 controls són molt més greus que deu errors en una aplicació de 500. El divisor representa el pitjor escenari possible: que **tots** els controls tinguessin un error greu.
+**Penalització relativa a la mida del fitxer.** El divisor representa el pitjor escenari possible: que **tots** els controls tinguessin un error greu.
 
 ```
 puntuació = 100 × (1 − penalització_total / (nombre_de_controls × 10))
 ```
 
-**Les incidències de revisió manual NO penalitzen.** Penalitzar-les seria injust (poden ser correctes) i ignorar-les seria perillós (amagaria els límits de l'anàlisi). Per això es mostren **sempre al costat de la puntuació**, amb un avís explícit.
+**Les incidències de revisió manual NO penalitzen.** Es mostren sempre al costat de la puntuació, amb un avís explícit.
 
-> La puntuació mesura *el que s'ha pogut verificar*; la revisió manual mesura *el que queda per verificar*. Barrejar-les falsejaria totes dues.
+> La puntuació mesura *el que s'ha pogut verificar*; la revisió manual mesura *el que queda per verificar*.
 
 ---
 
@@ -74,46 +77,56 @@ puntuació = 100 × (1 − penalització_total / (nombre_de_controls × 10))
 ```
 AccessibilityAnalyzer/
 ├── AccessibilityAnalyzer.Core/     Motor d'anàlisi (biblioteca de classes)
-│   ├── Models/                     Model de domini
+│   ├── Models/                     Model de domini i configuració
 │   ├── Parsing/                    Lectura i recorregut del XAML
-│   ├── Rules/                      Implementació de les regles R1–R7
-│   └── Analysis/                   Càlcul de contrast i de puntuació
+│   ├── Rules/                      Implementació de les regles R1–R8
+│   ├── Analysis/                   Contrast, puntuació i simulació de daltonisme
+│   └── Reporting/                  Generació de l'informe HTML
 │
 └── AccessibilityAnalyzer.App/      Interfície d'usuari (aplicació WPF)
+    ├── Controls/                   Indicador circular de puntuació
     └── TestData/                   Fitxers XAML de prova
 ```
 
-**Per què dos projectes?** El motor no depèn de la interfície, cosa que permet:
-
-- provar cada regla de manera aïllada, sense obrir cap finestra;
-- reutilitzar el motor des d'altres entorns (per exemple, integració contínua);
-- modificar la interfície sense afectar la lògica d'anàlisi.
-
-La dependència és unidireccional: `App → Core`. El motor no sap res de la interfície.
+**Per què dos projectes?** El motor no depèn de la interfície, cosa que permet provar cada regla de manera aïllada, reutilitzar el motor des d'altres entorns i modificar la interfície sense afectar la lògica. La dependència és unidireccional: `App → Core`.
 
 ### Components principals
 
 | Component | Responsabilitat |
 |-----------|-----------------|
-| `XamlParser` | Converteix el fitxer XAML en un arbre de controls, conservant la jerarquia i el número de línia de cada element. |
-| `IAccessibilityRule` | Contracte comú de totes les regles. Afegir una regla nova consisteix a crear una classe que l'implementi, sense tocar el motor. |
-| `AccessibilityAnalyzerEngine` | Coordina l'anàlisi: invoca el parser, aplica les regles i genera l'informe. |
+| `XamlParser` | Converteix el XAML en un arbre de controls, amb jerarquia i número de línia. |
+| `IAccessibilityRule` | Contracte comú de totes les regles. Afegir-ne una consisteix a crear una classe. |
+| `AccessibilityAnalyzerEngine` | Coordina l'anàlisi: parser, regles i generació de l'informe. Permet activar o desactivar regles. |
 | `AnalysisReport` | Resultat complet: incidències, comptadors per categoria i puntuació. |
 | `ScoreCalculator` | Càlcul de la puntuació ponderada. |
-| `ColorUtils` | Luminància relativa i ràtio de contrast segons la fórmula de WCAG 2.2. |
+| `ColorUtils` | Luminància relativa i ràtio de contrast segons WCAG 2.2. |
+| `ColorBlindnessSimulator` | Simulació dels tipus de daltonisme mitjançant matrius de transformació. |
 | `AnalysisSettings` | Llindars configurables (mida de lletra, ràtio de contrast, mida de l'objectiu). |
+| `HtmlReportGenerator` | Exportació de l'informe com a document HTML accessible. |
+
+---
+
+## Funcionalitats
+
+- Càrrega i anàlisi de fitxers XAML sense executar l'aplicació.
+- Detecció de vuit tipus d'incidència d'accessibilitat (R1–R8).
+- Classificació per severitat i per grau de confiança (error / advertiment / revisió manual).
+- Informe amb puntuació global, comptadors i detall per regla, amb la ubicació de cada incidència.
+- Indicador circular de puntuació.
+- Exportació de l'informe en format HTML autocontingut i accessible.
+- Configuració dels llindars d'anàlisi i activació/desactivació de regles.
 
 ---
 
 ## Decisions de disseny
 
-**Anàlisi estàtica sobre XML.** XAML és, en essència, un document XML, de manera que es recorre amb `System.Xml.Linq` sense executar l'aplicació. L'aportació del treball són les **regles d'accessibilitat**, no el *parsing*.
+**Anàlisi estàtica sobre XML.** XAML és, en essència, un document XML; es recorre amb `System.Xml.Linq` sense executar l'aplicació. L'aportació del treball són les **regles d'accessibilitat**, no el *parsing*.
 
-**Severitat i categoria són eixos independents.** La severitat mesura l'impacte sobre l'usuari; la categoria, la confiança de la detecció. Un mateix problema greu pot ser un `Error` (si els colors són literals) o `RevisioManual` (si depenen d'un tema).
+**Severitat i categoria són eixos independents.** La severitat mesura l'impacte sobre l'usuari; la categoria, la confiança de la detecció.
 
-**Resolució del fons heretat.** Un control sense `Background` explícit hereta el del seu contenidor. El parser reconstrueix la jerarquia pare-fill perquè la regla de contrast pugui pujar per l'arbre fins a trobar qui declara el fons.
+**Resolució del fons heretat.** El parser reconstrueix la jerarquia pare-fill perquè la regla de contrast pugui pujar per l'arbre fins a trobar qui declara el fons.
 
-**Llindars configurables.** Els valors per defecte són els que exigeix la normativa (12 px de lletra, ràtio 4.5:1, objectius de 24×24 px), però es poden ajustar.
+**La pròpia eina és accessible.** La interfície compleix els criteris que la mateixa eina comprova (*dogfooding*): analitzada amb ella mateixa, obté el 100 %.
 
 ---
 
@@ -137,11 +150,13 @@ La dependència és unidireccional: `App → Core`. El motor no sap res de la in
 
 - [x] Estructura del projecte (Core + App)
 - [x] Parser de XAML amb jerarquia i informació de línia
-- [x] Regles R1–R7 del catàleg
-- [x] Llindars configurables
+- [x] Regles R1–R8 del catàleg
 - [x] Model de l'informe i càlcul de puntuació
-- [ ] Interfície d'auditoria
-- [ ] Exportació de l'informe
+- [x] Interfície d'auditoria amb indicador de puntuació
+- [x] Exportació de l'informe en HTML
+- [x] Configuració de llindars i activació de regles (RF6)
+- [ ] Anàlisi de directoris complets
+- [ ] Proves unitàries
 - [ ] Conjunt de casos de prova i validació
 
 ---

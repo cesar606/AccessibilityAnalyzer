@@ -59,5 +59,9 @@
 
 		</StackPanel>
 
+        <!-- R8: vermell i verd es confonen sota deuteranopia/protanopia -->
+        <TextBlock Text="Estat correcte" Foreground="#00AA00" />
+        <TextBlock Text="Estat erroni" Foreground="#DD0000" />
+
     </StackPanel>
 </Window>
