@@ -6,6 +6,7 @@ namespace AccessibilityAnalyzer.App
     using AccessibilityAnalyzer.Core.Rules;
     using System.Globalization;
     using System.Windows;
+    using AccessibilityAnalyzer.Core.Analysis;
     using System.Windows.Controls;
     using System.Collections.Generic;
     using System.Windows.Controls;
@@ -55,6 +56,88 @@ namespace AccessibilityAnalyzer.App
             this.FontSizeInput.Text = settings.MinimumFontSize.ToString(CultureInfo.InvariantCulture);
             this.ContrastInput.Text = settings.MinimumContrastRatio.ToString(CultureInfo.InvariantCulture);
             this.TargetSizeInput.Text = settings.MinimumTargetSize.ToString(CultureInfo.InvariantCulture);
+            this.UpdatePreview();
+        }
+
+        /// <summary>
+        /// Updates the visual examples whenever a threshold value changes.
+        /// </summary>
+        /// <param name="sender">The control that raised the event.</param>
+        /// <param name="e">The event data.</param>
+        private void OnPreviewChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            this.UpdatePreview();
+        }
+
+        /// <summary>
+        /// Redraws the example text and target using the current threshold values.
+        /// </summary>
+        private void UpdatePreview()
+        {
+            // The previews may not exist yet during initialisation.
+            if (this.FontPreview is null || this.TargetPreview is null)
+            {
+                return;
+            }
+
+            if (TryParse(this.FontSizeInput.Text, out double fontSize))
+            {
+                // The preview font is capped so that large values do not break the layout.
+                this.FontPreview.FontSize = System.Math.Min(fontSize, 40);
+                this.FontPreview.Text = $"Exemple a {fontSize.ToString(CultureInfo.InvariantCulture)} px";
+            }
+
+            if (TryParse(this.TargetSizeInput.Text, out double targetSize))
+            {
+                // The preview is capped so that large values do not overflow the window.
+                double visualSize = System.Math.Min(targetSize, 60);
+                this.TargetPreview.Width = visualSize;
+                this.TargetPreview.Height = visualSize;
+            }
+
+            if (this.ContrastBox is not null
+                && TryParse(this.ContrastInput.Text, out double ratio))
+            {
+                // Shows a text whose grey level produces exactly the chosen contrast
+                // ratio on white, so the user can see how readable that level is.
+                byte level = GrayForRatio(ratio);
+                this.ContrastText.Foreground = Brush(level);
+                this.ContrastText.Text = $"Contrast {ratio.ToString(CultureInfo.InvariantCulture)}:1";
+            }
+        }
+
+        /// <summary>
+        /// Creates a solid grey brush of the given level.
+        /// </summary>
+        /// <param name="level">The grey level, from 0 to 255.</param>
+        /// <returns>The brush.</returns>
+        private static System.Windows.Media.SolidColorBrush Brush(byte level)
+        {
+            return new System.Windows.Media.SolidColorBrush(
+                System.Windows.Media.Color.FromRgb(level, level, level));
+        }
+
+        /// <summary>
+        /// Finds the darkest grey on white that meets the given contrast ratio,
+        /// so the preview shows exactly the minimum contrast being required.
+        /// </summary>
+        /// <param name="ratio">The required contrast ratio.</param>
+        /// <returns>The grey level, from 0 to 255.</returns>
+        private static byte GrayForRatio(double ratio)
+        {
+            for (int level = 0; level <= 255; level++)
+            {
+                double contrast = ColorUtils.GetContrastRatio(
+                    ((byte)level, (byte)level, (byte)level),
+                    (255, 255, 255));
+
+                if (contrast <= ratio)
+                {
+                    return (byte)level;
+                }
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -72,27 +155,27 @@ namespace AccessibilityAnalyzer.App
         /// </summary>
         /// <param name="sender">The control that raised the event.</param>
         /// <param name="e">The event data.</param>
+        /// <summary>
+        /// Validates the inputs within sensible ranges and, if correct, accepts the dialog.
+        /// </summary>
+        /// <param name="sender">The control that raised the event.</param>
+        /// <param name="e">The event data.</param>
         private void OnAcceptClick(object sender, RoutedEventArgs e)
         {
-            if (!TryParse(this.FontSizeInput.Text, out double fontSize)
-                || !TryParse(this.ContrastInput.Text, out double contrast)
-                || !TryParse(this.TargetSizeInput.Text, out double targetSize))
+            if (!TryParseInRange(this.FontSizeInput.Text, 1, 72, out double fontSize)
+                || !TryParseInRange(this.ContrastInput.Text, 1, 21, out double contrast)
+                || !TryParseInRange(this.TargetSizeInput.Text, 1, 100, out double targetSize))
             {
                 MessageBox.Show(
-                    "Tots els valors han de ser números positius vàlids.",
-                    "Valors no vàlids",
+                    "Revisa els valors:\n\n"
+                    + "· Mida de lletra: entre 1 i 72 px.\n"
+                    + "· Ràtio de contrast: entre 1 i 21.\n"
+                    + "· Mida de l'objectiu: entre 1 i 100 px.",
+                    "Valors fora de rang",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return;
             }
-
-            this.Settings = new AnalysisSettings
-            {
-                MinimumFontSize = fontSize,
-                MinimumContrastRatio = contrast,
-                MinimumContrastRatioLargeText = contrast - 1.5 > 0 ? contrast - 1.5 : contrast,
-                MinimumTargetSize = targetSize,
-            };
 
             HashSet<string> disabled = new HashSet<string>();
 
@@ -106,7 +189,28 @@ namespace AccessibilityAnalyzer.App
 
             this.DisabledRuleIds = disabled;
 
+            this.Settings = new AnalysisSettings
+            {
+                MinimumFontSize = fontSize,
+                MinimumContrastRatio = contrast,
+                MinimumContrastRatioLargeText = contrast - 1.5 > 0 ? contrast - 1.5 : contrast,
+                MinimumTargetSize = targetSize,
+            };
+
             this.DialogResult = true;
+        }
+
+        /// <summary>
+        /// Parses a number and checks it falls within the given inclusive range.
+        /// </summary>
+        /// <param name="text">The text to parse.</param>
+        /// <param name="min">The minimum allowed value.</param>
+        /// <param name="max">The maximum allowed value.</param>
+        /// <param name="value">When successful, contains the parsed value.</param>
+        /// <returns><c>true</c> if the value is valid and within range.</returns>
+        private static bool TryParseInRange(string text, double min, double max, out double value)
+        {
+            return TryParse(text, out value) && value >= min && value <= max;
         }
 
         /// <summary>
