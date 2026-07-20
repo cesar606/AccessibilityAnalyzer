@@ -3,140 +3,153 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:AccessibilityAnalyzer.App.Controls"
         Title="Avaluador d'accessibilitat WPF/XAML"
-        Height="700" Width="1100"
-        Background="#F7F7F9">
+        Height="750" Width="1200"
+        Background="#F0F2F5"
+        WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="16">
+    <Window.Resources>
+        <!-- Estil modern per als botons -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Padding" Value="18,10" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- BARRA SUPERIOR -->
-        <Border Grid.Row="0"
-                Background="#FFFFFF"
-                BorderBrush="#DDDDDD"
-                BorderThickness="1"
-                Padding="16"
-                Margin="0,0,0,16">
+        <Border Grid.Row="0" Background="#FFFFFF" CornerRadius="10"
+                Padding="20,14" Margin="0,0,0,16">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="8" ShadowDepth="1"
+                                  Opacity="0.08" Color="#000000" />
+            </Border.Effect>
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="LoadButton"
-                        Content="Carregar fitxer XAML"
+                        Content="Carregar fitxer"
                         AutomationProperties.Name="Carregar un fitxer XAML per analitzar"
                         Click="OnLoadFileClick"
-                        Padding="16,10"
-                        FontSize="14"
-                        Background="#2E5496"
-                        Foreground="#FFFFFF"
-                        BorderThickness="0"
-                        Cursor="Hand" />
+                        Style="{StaticResource ModernButton}"
+                        Background="#2B5797" Foreground="#FFFFFF" />
 
-				<Button x:Name="LoadFolderButton"
+                <Button x:Name="LoadFolderButton"
                         Content="Analitzar carpeta"
                         AutomationProperties.Name="Analitzar tots els fitxers XAML d'una carpeta"
                         Click="OnLoadFolderClick"
-                        Padding="16,10"
-                        FontSize="14"
-                        Background="#2E5496"
-                        Foreground="#FFFFFF"
-                        BorderThickness="0"
-                        Margin="10,0,0,0"
-                        Cursor="Hand" />
+                        Style="{StaticResource ModernButton}"
+                        Background="#2B5797" Foreground="#FFFFFF"
+                        Margin="10,0,0,0" />
 
                 <Button x:Name="ExportButton"
-                        Content="Exportar informe HTML"
+                        Content="Exportar HTML"
                         AutomationProperties.Name="Exportar l'informe en format HTML"
                         Click="OnExportClick"
                         IsEnabled="False"
-                        Padding="16,10"
-                        FontSize="14"
-                        Background="#1E7E45"
-                        Foreground="#FFFFFF"
-                        BorderThickness="0"
-                        Margin="20,0,0,0"
-                        Cursor="Hand" />
-				
-				<Button x:Name="SettingsButton"
-                        Content="Configuració"
+                        Style="{StaticResource ModernButton}"
+                        Background="#1E7E45" Foreground="#FFFFFF"
+                        Margin="10,0,0,0" />
+
+                <Button x:Name="SettingsButton"
+                        Content="&#x2699;  Configuració"
                         AutomationProperties.Name="Obrir la configuració de l'anàlisi"
                         Click="OnSettingsClick"
-                        Padding="16,10"
-                        FontSize="14"
-                        Background="#555555"
-                        Foreground="#FFFFFF"
-                        BorderThickness="0"
-                        Margin="10,0,0,0"
-                        Cursor="Hand" />
+                        Style="{StaticResource ModernButton}"
+                        Background="#E8EBF0" Foreground="#333333"
+                        Margin="10,0,0,0" />
 
                 <TextBlock x:Name="FileNameText"
                            Text="Cap fitxer carregat"
                            VerticalAlignment="Center"
-                           Margin="20,0,0,0"
+                           Margin="24,0,0,0"
                            FontSize="14"
-                           Foreground="#555555" />
+                           Foreground="#666666" />
             </StackPanel>
         </Border>
 
         <!-- CONTINGUT -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="320" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- PANELL ESQUERRE: RESUM -->
-            <Border Grid.Column="0"
-                    Background="#FFFFFF"
-                    BorderBrush="#DDDDDD"
-                    BorderThickness="1"
-                    Padding="20"
-                    Margin="0,0,16,0">
+            <Border Grid.Column="0" Background="#FFFFFF" CornerRadius="10"
+                    Padding="24" Margin="0,0,16,0">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="1"
+                                      Opacity="0.08" Color="#000000" />
+                </Border.Effect>
                 <StackPanel>
 
                     <controls:ScoreGauge x:Name="Gauge"
-                                         Margin="0,10,0,24"
+                                         Margin="0,10,0,28"
                                          HorizontalAlignment="Center" />
 
                     <TextBlock Text="Resum"
-                               FontSize="16"
-                               FontWeight="Bold"
+                               FontSize="17"
+                               FontWeight="SemiBold"
                                Foreground="#1F3864"
-                               Margin="0,0,0,12" />
+                               Margin="0,0,0,14" />
 
-                    <!-- Comptadors: la icona textual evita dependre nomes del color -->
-                    <Border Background="#FBEBEB" Padding="12" Margin="0,0,0,8">
+                    <!-- Comptador: errors -->
+                    <Border Background="#FEF0F0" CornerRadius="8"
+                            Padding="14" Margin="0,0,0,8">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="✕" FontSize="16" FontWeight="Bold"
-                                       Foreground="#A5281B" VerticalAlignment="Center" />
+                                       Foreground="#C62828" VerticalAlignment="Center" />
                             <TextBlock x:Name="ErrorCountText"
                                        Text="0 errors"
-                                       Margin="10,0,0,0"
+                                       Margin="12,0,0,0"
                                        FontSize="14"
-                                       Foreground="#A5281B"
+                                       Foreground="#C62828"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Border>
 
-                    <Border Background="#FDF1E3" Padding="12" Margin="0,0,0,8">
+                    <!-- Comptador: advertiments -->
+                    <Border Background="#FFF8E8" CornerRadius="8"
+                            Padding="14" Margin="0,0,0,8">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="!" FontSize="16" FontWeight="Bold"
                                        Foreground="#8A4A10" VerticalAlignment="Center" />
                             <TextBlock x:Name="WarningCountText"
                                        Text="0 advertiments"
-                                       Margin="10,0,0,0"
+                                       Margin="12,0,0,0"
                                        FontSize="14"
                                        Foreground="#8A4A10"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Border>
 
-                    <Border Background="#EEF2F7" Padding="12">
+                    <!-- Comptador: revisions manuals -->
+                    <Border Background="#EEF2F9" CornerRadius="8"
+                            Padding="14">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?" FontSize="16" FontWeight="Bold"
                                        Foreground="#1F3864" VerticalAlignment="Center" />
                             <TextBlock x:Name="ManualCountText"
                                        Text="0 revisions manuals"
-                                       Margin="10,0,0,0"
+                                       Margin="12,0,0,0"
                                        FontSize="14"
                                        Foreground="#1F3864"
                                        VerticalAlignment="Center" />
@@ -148,24 +161,25 @@
                                TextWrapping="Wrap"
                                FontSize="12"
                                FontStyle="Italic"
-                               Foreground="#666666"
-                               Margin="0,12,0,0" />
+                               Foreground="#777777"
+                               Margin="0,14,0,0" />
 
                     <TextBlock x:Name="ElementCountText"
                                Text=""
                                FontSize="12"
-                               Foreground="#888888"
+                               Foreground="#999999"
                                Margin="0,16,0,0" />
 
                 </StackPanel>
             </Border>
 
             <!-- PANELL DRET: INCIDENCIES -->
-            <Border Grid.Column="1"
-                    Background="#FFFFFF"
-                    BorderBrush="#DDDDDD"
-                    BorderThickness="1"
-                    Padding="20">
+            <Border Grid.Column="1" Background="#FFFFFF" CornerRadius="10"
+                    Padding="24">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="1"
+                                      Opacity="0.08" Color="#000000" />
+                </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -174,10 +188,10 @@
 
                     <TextBlock Grid.Row="0"
                                Text="Incidències detectades"
-                               FontSize="16"
-                               FontWeight="Bold"
+                               FontSize="17"
+                               FontWeight="SemiBold"
                                Foreground="#1F3864"
-                               Margin="0,0,0,12" />
+                               Margin="0,0,0,14" />
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel x:Name="IssuesPanel" />

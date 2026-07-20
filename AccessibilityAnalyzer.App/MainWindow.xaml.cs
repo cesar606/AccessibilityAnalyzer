@@ -46,9 +46,9 @@ namespace AccessibilityAnalyzer.App
         {
             return category switch
             {
-                IssueCategory.Error => Color.FromRgb(0xA5, 0x28, 0x1B),
-                IssueCategory.Advertiment => Color.FromRgb(0xB5, 0x65, 0x1A),
-                _ => Color.FromRgb(0x2E, 0x54, 0x96),
+                IssueCategory.Error => Color.FromRgb(0xC6, 0x28, 0x28),
+                IssueCategory.Advertiment => Color.FromRgb(0x8A, 0x4A, 0x10),
+                _ => Color.FromRgb(0x1F, 0x38, 0x64),
             };
         }
 
@@ -208,7 +208,8 @@ namespace AccessibilityAnalyzer.App
         }
 
         /// <summary>
-        /// Renders the files ranked from the lowest score to the highest.
+        /// Renders the files ranked from the lowest score to the highest,
+        /// each with an expandable section showing its issues.
         /// </summary>
         /// <param name="report">The folder report whose files must be listed.</param>
         private void RenderFileRanking(FolderAnalysisReport report)
@@ -219,29 +220,31 @@ namespace AccessibilityAnalyzer.App
             {
                 Text = "Fitxers ordenats per puntuació (de menor a major)",
                 FontSize = 14,
-                FontWeight = FontWeights.Bold,
+                FontWeight = FontWeights.SemiBold,
                 Foreground = new SolidColorBrush(Color.FromRgb(0x1F, 0x38, 0x64)),
-                Margin = new Thickness(0, 0, 0, 12),
+                Margin = new Thickness(0, 0, 0, 14),
             });
 
             foreach (AnalysisReport fileReport in report.RankByScore())
             {
                 Color scoreColor = fileReport.Score >= 80
                     ? Color.FromRgb(0x1E, 0x7E, 0x45)
-                    : fileReport.Score >= 50 ? Color.FromRgb(0x8A, 0x4A, 0x10) : Color.FromRgb(0xA5, 0x28, 0x1B);
+                    : fileReport.Score >= 50 ? Color.FromRgb(0x8A, 0x4A, 0x10) : Color.FromRgb(0xC6, 0x28, 0x28);
 
-                StackPanel row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 6) };
+                // Header row with score, name and counts.
+                StackPanel header = new StackPanel { Orientation = Orientation.Horizontal };
 
-                row.Children.Add(new TextBlock
+                header.Children.Add(new TextBlock
                 {
                     Text = $"{fileReport.Score}%",
                     FontSize = 14,
                     FontWeight = FontWeights.Bold,
                     Foreground = new SolidColorBrush(scoreColor),
                     Width = 55,
+                    VerticalAlignment = VerticalAlignment.Center,
                 });
 
-                row.Children.Add(new TextBlock
+                header.Children.Add(new TextBlock
                 {
                     Text = fileReport.FileName,
                     FontSize = 14,
@@ -249,15 +252,81 @@ namespace AccessibilityAnalyzer.App
                     VerticalAlignment = VerticalAlignment.Center,
                 });
 
-                row.Children.Add(new TextBlock
+                header.Children.Add(new TextBlock
                 {
                     Text = $"  ({fileReport.ErrorCount} errors, {fileReport.WarningCount} advert.)",
                     FontSize = 12,
-                    Foreground = new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88)),
+                    Foreground = new SolidColorBrush(Color.FromRgb(0x99, 0x99, 0x99)),
                     VerticalAlignment = VerticalAlignment.Center,
                 });
 
-                this.IssuesPanel.Children.Add(row);
+                if (fileReport.Issues.Count == 0)
+                {
+                    // No issues: just show the row, no expander needed.
+                    Border row = new Border
+                    {
+                        Padding = new Thickness(10, 8, 10, 8),
+                        Margin = new Thickness(0, 0, 0, 4),
+                        Background = new SolidColorBrush(Color.FromRgb(0xFA, 0xFA, 0xFA)),
+                        CornerRadius = new CornerRadius(6),
+                        Child = header,
+                    };
+                    this.IssuesPanel.Children.Add(row);
+                }
+                else
+                {
+                    // Build the expandable detail with the issues.
+                    StackPanel detail = new StackPanel { Margin = new Thickness(55, 6, 0, 0) };
+
+                    foreach (KeyValuePair<string, List<AccessibilityIssue>> group in fileReport.GroupByRule())
+                    {
+                        detail.Children.Add(new TextBlock
+                        {
+                            Text = $"{group.Key} — {group.Value[0].RuleName}",
+                            FontSize = 12,
+                            FontWeight = FontWeights.SemiBold,
+                            Foreground = new SolidColorBrush(Color.FromRgb(0x1F, 0x38, 0x64)),
+                            Margin = new Thickness(0, 6, 0, 4),
+                        });
+
+                        foreach (AccessibilityIssue issue in group.Value)
+                        {
+                            Color issueColor = GetCategoryColor(issue.Category);
+
+                            StackPanel issueLine = new StackPanel { Orientation = Orientation.Horizontal };
+
+                            issueLine.Children.Add(new TextBlock
+                            {
+                                Text = GetCategoryLabel(issue.Category),
+                                FontSize = 11,
+                                FontWeight = FontWeights.Bold,
+                                Foreground = new SolidColorBrush(issueColor),
+                            });
+
+                            issueLine.Children.Add(new TextBlock
+                            {
+                                Text = $"  línia {issue.LineNumber} — {issue.Message}",
+                                FontSize = 11,
+                                Foreground = new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55)),
+                                TextWrapping = TextWrapping.Wrap,
+                            });
+
+                            detail.Children.Add(issueLine);
+                        }
+                    }
+
+                    Expander expander = new Expander
+                    {
+                        Header = header,
+                        Content = detail,
+                        IsExpanded = false,
+                        Padding = new Thickness(6, 4, 6, 4),
+                        Margin = new Thickness(0, 0, 0, 4),
+                        Background = new SolidColorBrush(Color.FromRgb(0xFA, 0xFA, 0xFA)),
+                    };
+
+                    this.IssuesPanel.Children.Add(expander);
+                }
             }
         }
 
