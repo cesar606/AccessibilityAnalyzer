@@ -1,6 +1,6 @@
 # Avaluador estàtic d'accessibilitat per a interfícies WPF/XAML
 
-Treball de Fi de Grau — Grau en Enginyeria Informàtica (Menció en Tecnologies de la Informació)  
+Treball de Fi de Grau — Grau en Enginyeria Informàtica  
 Escola Politècnica Superior, Universitat de Lleida — Campus Igualada-UdL
 
 **Autor:** Cesar Gallardo Rodriguez
@@ -76,19 +76,24 @@ puntuació = 100 × (1 − penalització_total / (nombre_de_controls × 10))
 
 ```
 AccessibilityAnalyzer/
-├── AccessibilityAnalyzer.Core/     Motor d'anàlisi (biblioteca de classes)
-│   ├── Models/                     Model de domini i configuració
-│   ├── Parsing/                    Lectura i recorregut del XAML
-│   ├── Rules/                      Implementació de les regles R1–R8
-│   ├── Analysis/                   Contrast, puntuació i simulació de daltonisme
-│   └── Reporting/                  Generació de l'informe HTML
+├── AccessibilityAnalyzer.sln
+├── dataset/                            Fitxers de validació amb ground truth
 │
-└── AccessibilityAnalyzer.App/      Interfície d'usuari (aplicació WPF)
-    ├── Controls/                   Indicador circular de puntuació
-    └── TestData/                   Fitxers XAML de prova
+├── AccessibilityAnalyzer.Core/         Motor d'anàlisi (biblioteca de classes)
+│   ├── Models/                         Model de domini i configuració
+│   ├── Parsing/                        Lectura i recorregut del XAML
+│   ├── Rules/                          Implementació de les regles R1–R8
+│   ├── Analysis/                       Contrast, puntuació i simulació de daltonisme
+│   └── Reporting/                      Generació de l'informe HTML
+│
+├── AccessibilityAnalyzer.App/          Interfície d'usuari (aplicació WPF)
+│   ├── Controls/                       Indicador circular de puntuació
+│   └── TestData/                       Fitxer XAML de prova ràpida
+│
+└── AccessibilityAnalyzer.Tests/        Proves unitàries (xUnit)
 ```
 
-**Per què dos projectes?** El motor no depèn de la interfície, cosa que permet provar cada regla de manera aïllada, reutilitzar el motor des d'altres entorns i modificar la interfície sense afectar la lògica. La dependència és unidireccional: `App → Core`.
+**Per què tres projectes?** El motor (`Core`) no depèn de la interfície (`App`), cosa que permet provar cada regla de manera aïllada, reutilitzar el motor des d'altres entorns i modificar la interfície sense afectar la lògica. Els tests (`Tests`) referencien només el motor. Les dependències són unidireccionals: `App → Core` i `Tests → Core`.
 
 ### Components principals
 
@@ -98,6 +103,7 @@ AccessibilityAnalyzer/
 | `IAccessibilityRule` | Contracte comú de totes les regles. Afegir-ne una consisteix a crear una classe. |
 | `AccessibilityAnalyzerEngine` | Coordina l'anàlisi: parser, regles i generació de l'informe. Permet activar o desactivar regles. |
 | `AnalysisReport` | Resultat complet: incidències, comptadors per categoria i puntuació. |
+| `FolderAnalysisReport` | Resultat agregat de l'anàlisi d'un directori complet. |
 | `ScoreCalculator` | Càlcul de la puntuació ponderada. |
 | `ColorUtils` | Luminància relativa i ràtio de contrast segons WCAG 2.2. |
 | `ColorBlindnessSimulator` | Simulació dels tipus de daltonisme mitjançant matrius de transformació. |
@@ -108,13 +114,16 @@ AccessibilityAnalyzer/
 
 ## Funcionalitats
 
-- Càrrega i anàlisi de fitxers XAML sense executar l'aplicació.
+- Càrrega i anàlisi de fitxers XAML individuals sense executar l'aplicació.
+- Anàlisi de directoris complets amb informe agregat i rànquing de fitxers.
 - Detecció de vuit tipus d'incidència d'accessibilitat (R1–R8).
 - Classificació per severitat i per grau de confiança (error / advertiment / revisió manual).
 - Informe amb puntuació global, comptadors i detall per regla, amb la ubicació de cada incidència.
 - Indicador circular de puntuació.
+- Vista desplegable de les incidències per fitxer en l'anàlisi de directoris.
 - Exportació de l'informe en format HTML autocontingut i accessible.
-- Configuració dels llindars d'anàlisi i activació/desactivació de regles.
+- Configuració dels llindars d'anàlisi amb vista prèvia en temps real.
+- Activació i desactivació individual de regles.
 
 ---
 
@@ -126,7 +135,19 @@ AccessibilityAnalyzer/
 
 **Resolució del fons heretat.** El parser reconstrueix la jerarquia pare-fill perquè la regla de contrast pugui pujar per l'arbre fins a trobar qui declara el fons.
 
-**La pròpia eina és accessible.** La interfície compleix els criteris que la mateixa eina comprova (*dogfooding*): analitzada amb ella mateixa, obté el 100 %.
+**La pròpia eina és accessible.** La interfície compleix els criteris que la mateixa eina comprova (*dogfooding*): analitzada amb ella mateixa, obté el 100 %. Durant el desenvolupament, l'eina va detectar tres incompliments reals de contrast a la seva pròpia interfície, que van ser corregits.
+
+---
+
+## Validació
+
+L'eina s'ha validat mitjançant dues estratègies complementàries:
+
+**Dataset amb ground truth.** Tres fitxers XAML dissenyats amb incidències conegudes. L'eina els detecta tots sense cap fals positiu ni cap fals negatiu (precisió i exhaustivitat del 100 %).
+
+**XAML de projectes reals.** Deu fitxers descarregats de repositoris de codi obert (microsoft/WPF-Samples, syncfusion/wpf-demos, PrismLibrary/Prism-Samples-Wpf). Dels deu, sis obtenen un 100 % net (zero falsos positius) i en quatre es detecten incidències reals, incloent-hi 11 errors d'accessibilitat en un exemple del directori Accessibility del propi repositori de Microsoft.
+
+**Proves unitàries.** 27 tests automatitzats amb xUnit, cobreixen el parser, el càlcul de contrast, la puntuació, cada regla (amb casos de detecció i d'absència de falsos positius) i el motor complet (inclosa la desactivació de regles).
 
 ---
 
@@ -148,16 +169,16 @@ AccessibilityAnalyzer/
 
 ## Estat del desenvolupament
 
-- [x] Estructura del projecte (Core + App)
+- [x] Estructura del projecte (Core + App + Tests)
 - [x] Parser de XAML amb jerarquia i informació de línia
-- [x] Regles R1–R8 del catàleg
+- [x] Regles R1–R8 del catàleg (incloent-hi simulació de daltonisme)
 - [x] Model de l'informe i càlcul de puntuació
-- [x] Interfície d'auditoria amb indicador de puntuació
+- [x] Interfície d'auditoria amb indicador de puntuació i desplegables
 - [x] Exportació de l'informe en HTML
-- [x] Configuració de llindars i activació de regles (RF6)
-- [ ] Anàlisi de directoris complets
-- [ ] Proves unitàries
-- [ ] Conjunt de casos de prova i validació
+- [x] Configuració de llindars amb vista prèvia en viu i activació de regles (RF6)
+- [x] Anàlisi de directoris complets amb rànquing de fitxers
+- [x] 27 proves unitàries (xUnit)
+- [x] Conjunt de casos de prova i validació amb XAML reals
 
 ---
 
