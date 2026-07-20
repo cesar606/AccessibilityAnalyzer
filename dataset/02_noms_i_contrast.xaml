@@ -1,0 +1,17 @@
+<!-- CAS: problemes de noms accessibles i contrast.
+     Ground truth:
+       R1 (Error) x2: TextBox i ComboBox sense nom accessible
+       R4 (Error) x1: #CCCCCC sobre #FFFFFF = 1.61:1
+     Total esperat: 3 incidencies (3 errors) -->
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cerca">
+    <StackPanel Background="#FFFFFF">
+        <TextBlock Text="Cercador" Foreground="#000000" FontSize="16" />
+        <TextBox Width="200" Height="30" />
+        <ComboBox Width="150" Height="30" />
+        <TextBlock Text="Ajuda contextual" Foreground="#CCCCCC" />
+        <Button Content="Cercar" AutomationProperties.Name="Executar la cerca"
+                Foreground="#FFFFFF" Background="#0066CC" Width="100" Height="32" />
+    </StackPanel>
+</Window>

@@ -1,0 +1,19 @@
+<!-- CAS: problemes motrius i de mida de lletra.
+     Ground truth:
+       R5 (Advertiment) x1: FontSize=9
+       R6 (Error) x1: IsTabStop=False
+       R7 (Advertiment) x2: Width i Height = 18
+     Total esperat: 4 incidencies (1 error, 3 advertiments) -->
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configuracio">
+    <StackPanel Background="#FFFFFF">
+        <TextBlock Text="Text petit dificil de llegir" Foreground="#000000" FontSize="9" />
+        <Button Content="Opcio inaccessible" AutomationProperties.Name="Opcio"
+                Foreground="#000000" IsTabStop="False" Width="120" Height="36" />
+        <Button Content="X" AutomationProperties.Name="Tancar"
+                Foreground="#000000" Width="18" Height="18" />
+        <Button Content="Desar" AutomationProperties.Name="Desar canvis"
+                Foreground="#FFFFFF" Background="#0066CC" Width="100" Height="32" />
+    </StackPanel>
+</Window>

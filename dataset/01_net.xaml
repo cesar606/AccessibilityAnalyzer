@@ -1,0 +1,16 @@
+<!-- CAS DE CONTROL: fitxer net, sense incidencies. Ground truth: 0 incidencies, 100%. -->
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Formulari accessible">
+    <StackPanel Background="#FFFFFF">
+        <TextBlock Text="Formulari de contacte" Foreground="#000000" FontSize="18" />
+        <Label Content="Nom" Foreground="#000000" />
+        <TextBox AutomationProperties.Name="Nom de l'usuari" Width="200" Height="30" />
+        <Label Content="Correu" Foreground="#000000" />
+        <TextBox AutomationProperties.Name="Correu electronic" Width="200" Height="30" />
+        <CheckBox Content="Accepto les condicions" Foreground="#000000" />
+        <Button Content="Enviar" AutomationProperties.Name="Enviar el formulari"
+                Foreground="#FFFFFF" Background="#0066CC" Width="120" Height="36" />
+        <Image Source="decoracio.png" AutomationProperties.AccessibilityView="Raw" />
+    </StackPanel>
+</Window>
