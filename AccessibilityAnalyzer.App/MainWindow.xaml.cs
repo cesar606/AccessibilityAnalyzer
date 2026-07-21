@@ -6,6 +6,7 @@ namespace AccessibilityAnalyzer.App
     using AccessibilityAnalyzer.Core.Models;
     using AccessibilityAnalyzer.Core.Reporting;
     using Microsoft.Win32;
+    using AccessibilityAnalyzer.Core.Reporting;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Globalization;
@@ -24,6 +25,9 @@ namespace AccessibilityAnalyzer.App
         private AnalysisSettings? _settings;
         private AnalysisReport? _currentReport;
         private ISet<string> _disabledRuleIds = new HashSet<string>();
+        private FolderAnalysisReport? _currentFolderReport;
+        private string? _lastLoadedPath;
+        private bool _lastWasFolder;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="MainWindow"/> class.
@@ -85,6 +89,8 @@ namespace AccessibilityAnalyzer.App
                 return;
             }
 
+            this._lastLoadedPath = dialog.FileName;
+            this._lastWasFolder = false;
             this.AnalyseFile(dialog.FileName);
         }
 
@@ -105,6 +111,8 @@ namespace AccessibilityAnalyzer.App
                 return;
             }
 
+            this._lastLoadedPath = dialog.FolderName;
+            this._lastWasFolder = true;
             FolderAnalysisReport folderReport =
                 this._engine.GenerateFolderReport(dialog.FolderName, true, this._disabledRuleIds);
 
@@ -161,6 +169,8 @@ namespace AccessibilityAnalyzer.App
         private void DisplayReport(AnalysisReport report)
         {
             this._currentReport = report;
+            this._currentFolderReport = null;
+            this.WelcomePanel.Visibility = Visibility.Collapsed;
             this.ExportButton.IsEnabled = true;
             this.FileNameText.Text = report.FileName;
             this.Gauge.Score = report.Score;
@@ -190,7 +200,9 @@ namespace AccessibilityAnalyzer.App
         {
             // The export button targets a single report, so it is disabled for folders.
             this._currentReport = null;
-            this.ExportButton.IsEnabled = false;
+            this._currentFolderReport = report;
+            this.ExportButton.IsEnabled = true;
+            this.WelcomePanel.Visibility = Visibility.Collapsed;
 
             this.FileNameText.Text = $"{report.FileCount} fitxers analitzats";
             this.Gauge.Score = report.AverageScore;
@@ -467,9 +479,27 @@ namespace AccessibilityAnalyzer.App
         /// </summary>
         /// <param name="sender">The control that raised the event.</param>
         /// <param name="e">The event data.</param>
+        /// <summary>
+        /// Exports the current report (single file or folder) as an HTML document.
+        /// </summary>
+        /// <param name="sender">The control that raised the event.</param>
+        /// <param name="e">The event data.</param>
         private void OnExportClick(object sender, RoutedEventArgs e)
         {
-            if (this._settings is null)
+            string html;
+            string defaultName;
+
+            if (this._currentFolderReport is not null)
+            {
+                html = HtmlReportGenerator.GenerateFolder(this._currentFolderReport);
+                defaultName = "informe-accessibilitat-directori.html";
+            }
+            else if (this._currentReport is not null)
+            {
+                html = HtmlReportGenerator.Generate(this._currentReport);
+                defaultName = $"informe-accessibilitat-{Path.GetFileNameWithoutExtension(this._currentReport.FileName)}.html";
+            }
+            else
             {
                 return;
             }
@@ -477,7 +507,7 @@ namespace AccessibilityAnalyzer.App
             SaveFileDialog dialog = new SaveFileDialog
             {
                 Filter = "Document HTML (*.html)|*.html",
-                FileName = $"informe-accessibilitat-{Path.GetFileNameWithoutExtension(this._currentReport.FileName)}.html",
+                FileName = defaultName,
                 Title = "Desar l'informe",
             };
 
@@ -488,7 +518,6 @@ namespace AccessibilityAnalyzer.App
 
             try
             {
-                string html = HtmlReportGenerator.Generate(this._currentReport);
                 File.WriteAllText(dialog.FileName, html);
 
                 if (MessageBox.Show(
@@ -529,13 +558,19 @@ namespace AccessibilityAnalyzer.App
                 this._disabledRuleIds = dialog.DisabledRuleIds;
                 this._engine = new AccessibilityAnalyzerEngine(this._settings);
 
-                if (this._currentReport is not null)
+                // Re-analyse automatically if something was already loaded.
+                if (this._lastLoadedPath is not null)
                 {
-                    MessageBox.Show(
-                        "La configuració s'ha actualitzat. Torna a analitzar el fitxer per aplicar-la.",
-                        "Configuració desada",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    if (this._lastWasFolder)
+                    {
+                        FolderAnalysisReport folderReport =
+                            this._engine.GenerateFolderReport(this._lastLoadedPath, true, this._disabledRuleIds);
+                        this.DisplayFolderReport(folderReport);
+                    }
+                    else
+                    {
+                        this.AnalyseFile(this._lastLoadedPath);
+                    }
                 }
             }
         }

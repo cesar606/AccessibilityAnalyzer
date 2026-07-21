@@ -192,7 +192,24 @@
                                FontWeight="SemiBold"
                                Foreground="#1F3864"
                                Margin="0,0,0,14" />
-
+                    
+                    <StackPanel x:Name="WelcomePanel"
+                                Grid.Row="1"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Margin="0,60,0,0">
+                        <TextBlock Text="Benvingut"
+                                   FontSize="24" FontWeight="SemiBold"
+                                   Foreground="#1F3864"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,10" />
+                        <TextBlock Text="Carrega un fitxer XAML o una carpeta per començar l'anàlisi d'accessibilitat."
+                                   FontSize="14" Foreground="#888888"
+                                   TextWrapping="Wrap" TextAlignment="Center"
+                                   MaxWidth="400"
+                                   HorizontalAlignment="Center" />
+                    </StackPanel>
+                    
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel x:Name="IssuesPanel" />
                     </ScrollViewer>

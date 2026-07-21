@@ -116,43 +116,43 @@ namespace AccessibilityAnalyzer.Core.Reporting
             builder.AppendLine(CultureInfo.InvariantCulture, $"<title>Informe d'accessibilitat — {Escape(report.FileName)}</title>");
             builder.AppendLine("<style>");
             builder.AppendLine(@"
-  * { box-sizing: border-box; }
-  body { font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-         margin: 0; padding: 32px; background: #F7F7F9; color: #333; line-height: 1.5; }
-  .wrap { max-width: 1000px; margin: 0 auto; }
-  header { background: #fff; border: 1px solid #ddd; border-radius: 8px;
-           padding: 24px; margin-bottom: 24px; }
-  h1 { margin: 0 0 4px; font-size: 22px; color: #1F3864; }
-  .file { color: #666; font-size: 14px; }
-  .summary { display: flex; gap: 32px; align-items: center; flex-wrap: wrap;
-             background: #fff; border: 1px solid #ddd; border-radius: 8px;
-             padding: 24px; margin-bottom: 24px; }
-  .counts { flex: 1; min-width: 260px; }
-  .count { display: flex; align-items: center; gap: 10px; padding: 10px 14px;
-           border-radius: 6px; margin-bottom: 8px; font-size: 14px; }
-  .count .icon { font-weight: bold; font-size: 16px; }
-  .count.error   { background: #FBEBEB; color: #A5281B; }
-  .count.warning { background: #FDF1E3; color: #8A4A10; }
-  .count.manual  { background: #EEF2F7; color: #1F3864; }
-  .note { font-size: 13px; color: #555; font-style: italic; margin-top: 12px; }
-  h2 { font-size: 18px; color: #1F3864; margin: 32px 0 4px; }
-  .criterion { font-size: 13px; color: #666; margin-bottom: 12px; }
-  .issue { background: #fff; border: 1px solid #eee; border-left-width: 4px;
-           border-radius: 4px; padding: 12px 16px; margin-bottom: 8px; }
-  .issue.error   { border-left-color: #A5281B; }
-  .issue.warning { border-left-color: #8A4A10; }
-  .issue.manual  { border-left-color: #1F3864; }
-  .tag { font-size: 11px; font-weight: bold; letter-spacing: .04em; }
-  .issue.error .tag   { color: #A5281B; }
-  .issue.warning .tag { color: #8A4A10; }
-  .issue.manual .tag  { color: #1F3864; }
-  .line { font-size: 11px; color: #777; margin-left: 12px; }
-  .msg { margin-top: 4px; font-size: 14px; }
-  .clean { background: #EAF6EC; color: #1E7E45; border: 1px solid #C6E6CE;
-           border-radius: 8px; padding: 20px; font-size: 15px; }
-  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #ddd;
-           font-size: 12px; color: #888; }
-");
+              * { box-sizing: border-box; }
+              body { font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+                     margin: 0; padding: 32px; background: #F7F7F9; color: #333; line-height: 1.5; }
+              .wrap { max-width: 1000px; margin: 0 auto; }
+              header { background: #fff; border: 1px solid #ddd; border-radius: 8px;
+                       padding: 24px; margin-bottom: 24px; }
+              h1 { margin: 0 0 4px; font-size: 22px; color: #1F3864; }
+              .file { color: #666; font-size: 14px; }
+              .summary { display: flex; gap: 32px; align-items: center; flex-wrap: wrap;
+                         background: #fff; border: 1px solid #ddd; border-radius: 8px;
+                         padding: 24px; margin-bottom: 24px; }
+              .counts { flex: 1; min-width: 260px; }
+              .count { display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+                       border-radius: 6px; margin-bottom: 8px; font-size: 14px; }
+              .count .icon { font-weight: bold; font-size: 16px; }
+              .count.error   { background: #FBEBEB; color: #A5281B; }
+              .count.warning { background: #FDF1E3; color: #8A4A10; }
+              .count.manual  { background: #EEF2F7; color: #1F3864; }
+              .note { font-size: 13px; color: #555; font-style: italic; margin-top: 12px; }
+              h2 { font-size: 18px; color: #1F3864; margin: 32px 0 4px; }
+              .criterion { font-size: 13px; color: #666; margin-bottom: 12px; }
+              .issue { background: #fff; border: 1px solid #eee; border-left-width: 4px;
+                       border-radius: 4px; padding: 12px 16px; margin-bottom: 8px; }
+              .issue.error   { border-left-color: #A5281B; }
+              .issue.warning { border-left-color: #8A4A10; }
+              .issue.manual  { border-left-color: #1F3864; }
+              .tag { font-size: 11px; font-weight: bold; letter-spacing: .04em; }
+              .issue.error .tag   { color: #A5281B; }
+              .issue.warning .tag { color: #8A4A10; }
+              .issue.manual .tag  { color: #1F3864; }
+              .line { font-size: 11px; color: #777; margin-left: 12px; }
+              .msg { margin-top: 4px; font-size: 14px; }
+              .clean { background: #EAF6EC; color: #1E7E45; border: 1px solid #C6E6CE;
+                       border-radius: 8px; padding: 20px; font-size: 15px; }
+              footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #ddd;
+                       font-size: 12px; color: #888; }
+            ");
             builder.AppendLine("</style>");
             builder.AppendLine("</head>");
             builder.AppendLine("<body>");
@@ -179,15 +179,15 @@ namespace AccessibilityAnalyzer.Core.Reporting
             builder.AppendLine("<section class=\"summary\">");
 
             builder.AppendLine(CultureInfo.InvariantCulture, $@"
-  <svg width=""150"" height=""150"" viewBox=""0 0 120 120"" role=""img""
-       aria-label=""Puntuació d'accessibilitat: {report.Score} per cent"">
-    <circle cx=""60"" cy=""60"" r=""52"" fill=""none"" stroke=""#E8E8E8"" stroke-width=""12""/>
-    <circle cx=""60"" cy=""60"" r=""52"" fill=""none"" stroke=""{color}"" stroke-width=""12""
-            stroke-linecap=""round"" stroke-dasharray=""{filled.ToString("F1", CultureInfo.InvariantCulture)} 327""
-            transform=""rotate(-90 60 60)""/>
-    <text x=""60"" y=""64"" text-anchor=""middle"" font-size=""26"" font-weight=""bold"" fill=""#1F3864"">{report.Score}%</text>
-    <text x=""60"" y=""82"" text-anchor=""middle"" font-size=""10"" fill=""#666"">accessible</text>
-  </svg>");
+          <svg width=""150"" height=""150"" viewBox=""0 0 120 120"" role=""img""
+               aria-label=""Puntuació d'accessibilitat: {report.Score} per cent"">
+            <circle cx=""60"" cy=""60"" r=""52"" fill=""none"" stroke=""#E8E8E8"" stroke-width=""12""/>
+            <circle cx=""60"" cy=""60"" r=""52"" fill=""none"" stroke=""{color}"" stroke-width=""12""
+                    stroke-linecap=""round"" stroke-dasharray=""{filled.ToString("F1", CultureInfo.InvariantCulture)} 327""
+                    transform=""rotate(-90 60 60)""/>
+            <text x=""60"" y=""64"" text-anchor=""middle"" font-size=""26"" font-weight=""bold"" fill=""#1F3864"">{report.Score}%</text>
+            <text x=""60"" y=""82"" text-anchor=""middle"" font-size=""10"" fill=""#666"">accessible</text>
+          </svg>");
 
             builder.AppendLine("<div class=\"counts\">");
             builder.AppendLine(CultureInfo.InvariantCulture, $"<div class=\"count error\"><span class=\"icon\" aria-hidden=\"true\">✕</span> {report.ErrorCount} errors confirmats</div>");
@@ -251,6 +251,140 @@ namespace AccessibilityAnalyzer.Core.Reporting
             builder.AppendLine("</div>");
             builder.AppendLine("</body>");
             builder.AppendLine("</html>");
+        }
+        /// <summary>
+        /// Generates the HTML document describing the aggregated folder report.
+        /// </summary>
+        /// <param name="report">The folder report to render.</param>
+        /// <returns>The HTML document, as a string.</returns>
+        public static string GenerateFolder(FolderAnalysisReport report)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendLine("<!DOCTYPE html>");
+            builder.AppendLine("<html lang=\"ca\">");
+            builder.AppendLine("<head>");
+            builder.AppendLine("<meta charset=\"utf-8\">");
+            builder.AppendLine("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            builder.AppendLine($"<title>Informe d'accessibilitat — directori</title>");
+            builder.AppendLine("<style>");
+            builder.AppendLine(@"
+              * { box-sizing: border-box; }
+              body { font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+                     margin: 0; padding: 32px; background: #F7F7F9; color: #333; line-height: 1.5; }
+              .wrap { max-width: 1000px; margin: 0 auto; }
+              header { background: #fff; border: 1px solid #ddd; border-radius: 8px;
+                       padding: 24px; margin-bottom: 24px; }
+              h1 { margin: 0 0 4px; font-size: 22px; color: #1F3864; }
+              .file { color: #666; font-size: 14px; }
+              .summary { display: flex; gap: 32px; align-items: center; flex-wrap: wrap;
+                         background: #fff; border: 1px solid #ddd; border-radius: 8px;
+                         padding: 24px; margin-bottom: 24px; }
+              .counts { flex: 1; min-width: 260px; }
+              .count { display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+                       border-radius: 6px; margin-bottom: 8px; font-size: 14px; }
+              .count .icon { font-weight: bold; font-size: 16px; }
+              .count.error   { background: #FBEBEB; color: #A5281B; }
+              .count.warning { background: #FDF1E3; color: #8A4A10; }
+              .count.manual  { background: #EEF2F7; color: #1F3864; }
+              h2 { font-size: 18px; color: #1F3864; margin: 32px 0 12px; }
+              .file-card { background: #fff; border: 1px solid #eee; border-radius: 8px;
+                           padding: 16px 20px; margin-bottom: 12px; }
+              .file-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+              .score { font-size: 18px; font-weight: bold; min-width: 55px; }
+              .score.green { color: #1E7E45; } .score.orange { color: #8A4A10; } .score.red { color: #A5281B; }
+              .fname { font-size: 15px; color: #333; } .fmeta { font-size: 12px; color: #888; }
+              .issue { border-left: 3px solid #ddd; padding: 4px 12px; margin: 6px 0 6px 55px; font-size: 13px; }
+              .issue.error   { border-left-color: #A5281B; }
+              .issue.warning { border-left-color: #8A4A10; }
+              .issue.manual  { border-left-color: #1F3864; }
+              .tag { font-size: 11px; font-weight: bold; }
+              .issue.error .tag   { color: #A5281B; }
+              .issue.warning .tag { color: #8A4A10; }
+              .issue.manual .tag  { color: #1F3864; }
+              .clean { color: #1E7E45; font-size: 13px; margin-left: 55px; }
+              footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #ddd;
+                       font-size: 12px; color: #888; }
+            ");
+            builder.AppendLine("</style>");
+            builder.AppendLine("</head>");
+            builder.AppendLine("<body>");
+            builder.AppendLine("<div class=\"wrap\">");
+
+            // Header.
+            builder.AppendLine("<header>");
+            builder.AppendLine("<h1>Informe d'accessibilitat de directori</h1>");
+            builder.AppendLine($"<p class=\"file\">{report.FileCount} fitxers analitzats — puntuaci\u00f3 mitjana: <strong>{report.AverageScore} %</strong></p>");
+            builder.AppendLine("</header>");
+
+            // Summary with gauge.
+            string color = GetScoreColor(report.AverageScore);
+            double filled = 327.0 * report.AverageScore / 100.0;
+            string filledText = filled.ToString("F1", CultureInfo.InvariantCulture);
+
+            string svg = $@"
+  <svg width=""150"" height=""150"" viewBox=""0 0 120 120"" role=""img""
+       aria-label=""Puntuaci\u00f3 mitjana d'accessibilitat: {report.AverageScore} per cent"">
+    <circle cx=""60"" cy=""60"" r=""52"" fill=""none"" stroke=""#E8E8E8"" stroke-width=""12""/>
+    <circle cx=""60"" cy=""60"" r=""52"" fill=""none"" stroke=""{color}"" stroke-width=""12""
+            stroke-linecap=""round"" stroke-dasharray=""{filledText} 327""
+            transform=""rotate(-90 60 60)""/>
+    <text x=""60"" y=""64"" text-anchor=""middle"" font-size=""26"" font-weight=""bold"" fill=""#1F3864"">{report.AverageScore}%</text>
+    <text x=""60"" y=""82"" text-anchor=""middle"" font-size=""10"" fill=""#666"">mitjana</text>
+  </svg>";
+
+            builder.AppendLine("<section class=\"summary\">");
+            builder.AppendLine(svg);
+            builder.AppendLine("<div class=\"counts\">");
+            builder.AppendLine($"<div class=\"count error\"><span class=\"icon\" aria-hidden=\"true\">\u2715</span> {report.TotalErrors} errors confirmats</div>");
+            builder.AppendLine($"<div class=\"count warning\"><span class=\"icon\" aria-hidden=\"true\">!</span> {report.TotalWarnings} advertiments</div>");
+            builder.AppendLine($"<div class=\"count manual\"><span class=\"icon\" aria-hidden=\"true\">?</span> {report.TotalManualReview} revisions manuals</div>");
+            builder.AppendLine("</div>");
+            builder.AppendLine("</section>");
+
+            // File ranking with details.
+            builder.AppendLine("<h2>Fitxers ordenats per puntuaci\u00f3</h2>");
+
+            foreach (AnalysisReport fileReport in report.RankByScore())
+            {
+                string scoreClass = fileReport.Score >= 80 ? "green" : fileReport.Score >= 50 ? "orange" : "red";
+
+                builder.AppendLine("<div class=\"file-card\">");
+                builder.AppendLine(
+                    $"<div class=\"file-header\"><span class=\"score {scoreClass}\">{fileReport.Score}%</span>"
+                    + $"<span class=\"fname\">{Escape(fileReport.FileName)}</span>"
+                    + $"<span class=\"fmeta\">({fileReport.ErrorCount} errors, {fileReport.WarningCount} advert.)</span></div>");
+
+                if (fileReport.Issues.Count == 0)
+                {
+                    builder.AppendLine("<p class=\"clean\">Cap incid\u00e8ncia detectada.</p>");
+                }
+                else
+                {
+                    foreach (KeyValuePair<string, List<AccessibilityIssue>> group in fileReport.GroupByRule())
+                    {
+                        foreach (AccessibilityIssue issue in group.Value)
+                        {
+                            string cssClass = GetCategoryClass(issue.Category);
+                            builder.AppendLine(
+                                $"<div class=\"issue {cssClass}\"><span class=\"tag\">{GetCategoryLabel(issue.Category)}</span> "
+                                + $"l\u00ednia {issue.LineNumber} \u2014 {Escape(issue.Message)}</div>");
+                        }
+                    }
+                }
+
+                builder.AppendLine("</div>");
+            }
+
+            // Footer.
+            string timestamp = DateTime.Now.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+            builder.AppendLine("<footer>");
+            builder.AppendLine($"<p>Generat el {timestamp} per l'Avaluador est\u00e0tic d'accessibilitat per a interf\u00edcies WPF/XAML.</p>");
+            builder.AppendLine("<p>Criteris basats en WCAG 2.2, WCAG2ICT i EN 301 549.</p>");
+            builder.AppendLine("</footer>");
+            builder.AppendLine("</div></body></html>");
+
+            return builder.ToString();
         }
     }
 }
