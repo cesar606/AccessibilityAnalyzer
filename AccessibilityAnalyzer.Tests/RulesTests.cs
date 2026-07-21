@@ -140,7 +140,92 @@ namespace AccessibilityAnalyzer.Tests
             Assert.NotEmpty(issues);
             Assert.All(issues, issue => Assert.Equal(IssueCategory.RevisioManual, issue.Category));
         }
+        /// <summary>
+        /// R1 must not report a button whose textual content acts as the accessible name.
+        /// </summary>
+        [Fact]
+        public void R1_IgnoresButtonWithTextContent()
+        {
+            IReadOnlyList<XamlElement> elements = Parse("<Button Content=\"Desar\" />");
 
+            List<AccessibilityIssue> issues = new AccessibleNameRule().Analyse(elements).ToList();
+
+            Assert.Empty(issues);
+        }
+
+        /// <summary>
+        /// R2 must report an image without any text alternative.
+        /// </summary>
+        [Fact]
+        public void R2_DetectsImageWithoutAlt()
+        {
+            IReadOnlyList<XamlElement> elements = Parse("<Image Source=\"logo.png\" />");
+
+            List<AccessibilityIssue> issues = new TextAlternativeRule().Analyse(elements).ToList();
+
+            Assert.Single(issues);
+        }
+
+        /// <summary>
+        /// R3 must report two controls with the same accessible name.
+        /// </summary>
+        [Fact]
+        public void R3_DetectsDuplicateNames()
+        {
+            IReadOnlyList<XamlElement> elements = Parse(
+                "<StackPanel>"
+                + "<Button AutomationProperties.Name=\"Opcions\" Content=\"A\" />"
+                + "<Button AutomationProperties.Name=\"Opcions\" Content=\"B\" />"
+                + "</StackPanel>");
+
+            List<AccessibilityIssue> issues = new DuplicateNameRule().Analyse(elements).ToList();
+
+            Assert.NotEmpty(issues);
+        }
+
+        /// <summary>
+        /// R4 must not report black text on white background (maximum contrast).
+        /// </summary>
+        [Fact]
+        public void R4_IgnoresHighContrast()
+        {
+            IReadOnlyList<XamlElement> elements = Parse(
+                "<StackPanel Background=\"#FFFFFF\"><TextBlock Foreground=\"#000000\" /></StackPanel>");
+
+            List<AccessibilityIssue> issues =
+                new ContrastRule(new AnalysisSettings()).Analyse(elements).ToList();
+
+            Assert.Empty(issues);
+        }
+
+        /// <summary>
+        /// R5 must not report a font that meets the minimum size.
+        /// </summary>
+        [Fact]
+        public void R5_IgnoresAdequateFont()
+        {
+            IReadOnlyList<XamlElement> elements = Parse("<TextBlock FontSize=\"14\" />");
+
+            List<AccessibilityIssue> issues =
+                new FontSizeRule(new AnalysisSettings()).Analyse(elements).ToList();
+
+            Assert.Empty(issues);
+        }
+
+        /// <summary>
+        /// R7 must not report a target that meets the minimum size.
+        /// </summary>
+        [Fact]
+        public void R7_IgnoresAdequateTarget()
+        {
+            IReadOnlyList<XamlElement> elements = Parse(
+                "<Button Width=\"48\" Height=\"48\" Content=\"Ok\" />");
+
+            List<AccessibilityIssue> issues =
+                new TargetSizeRule(new AnalysisSettings()).Analyse(elements).ToList();
+
+            Assert.Empty(issues);
+        }
         /// <summary>
         /// Parses a XAML fragment wrapped in a root element.
         /// </summary>

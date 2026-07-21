@@ -48,6 +48,22 @@ namespace AccessibilityAnalyzer.Tests
         }
 
         /// <summary>
+        /// The engine must handle an empty XAML file without errors.
+        /// </summary>
+        [Fact]
+        public void GenerateReport_EmptyRoot_ReturnsEmptyReport()
+        {
+            string empty =
+                "<Window xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" />";
+
+            AccessibilityAnalyzerEngine engine = new AccessibilityAnalyzerEngine();
+            AnalysisReport report = engine.GenerateReport(empty, "empty.xaml");
+
+            Assert.Equal(100, report.Score);
+            Assert.Equal(1, report.AnalysedElements);
+        }
+
+        /// <summary>
         /// A disabled rule must not report any issue.
         /// </summary>
         [Fact]
