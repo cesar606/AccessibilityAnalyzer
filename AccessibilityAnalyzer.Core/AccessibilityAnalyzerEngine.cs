@@ -145,7 +145,8 @@ namespace AccessibilityAnalyzer.Core
                 try
                 {
                     string content = System.IO.File.ReadAllText(file);
-                    reports.Add(this.GenerateReport(content, System.IO.Path.GetFileName(file), disabledRuleIds));
+                    string relativePath = System.IO.Path.GetRelativePath(folderPath, file);
+                    reports.Add(this.GenerateReport(content, relativePath, disabledRuleIds));
                 }
                 catch (System.Xml.XmlException)
                 {

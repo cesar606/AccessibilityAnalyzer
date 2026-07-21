@@ -323,15 +323,15 @@ namespace AccessibilityAnalyzer.Core.Reporting
             string filledText = filled.ToString("F1", CultureInfo.InvariantCulture);
 
             string svg = $@"
-  <svg width=""150"" height=""150"" viewBox=""0 0 120 120"" role=""img""
-       aria-label=""Puntuaci\u00f3 mitjana d'accessibilitat: {report.AverageScore} per cent"">
-    <circle cx=""60"" cy=""60"" r=""52"" fill=""none"" stroke=""#E8E8E8"" stroke-width=""12""/>
-    <circle cx=""60"" cy=""60"" r=""52"" fill=""none"" stroke=""{color}"" stroke-width=""12""
-            stroke-linecap=""round"" stroke-dasharray=""{filledText} 327""
-            transform=""rotate(-90 60 60)""/>
-    <text x=""60"" y=""64"" text-anchor=""middle"" font-size=""26"" font-weight=""bold"" fill=""#1F3864"">{report.AverageScore}%</text>
-    <text x=""60"" y=""82"" text-anchor=""middle"" font-size=""10"" fill=""#666"">mitjana</text>
-  </svg>";
+              <svg width=""150"" height=""150"" viewBox=""0 0 120 120"" role=""img""
+                   aria-label=""Puntuaci\u00f3 mitjana d'accessibilitat: {report.AverageScore} per cent"">
+                <circle cx=""60"" cy=""60"" r=""52"" fill=""none"" stroke=""#E8E8E8"" stroke-width=""12""/>
+                <circle cx=""60"" cy=""60"" r=""52"" fill=""none"" stroke=""{color}"" stroke-width=""12""
+                        stroke-linecap=""round"" stroke-dasharray=""{filledText} 327""
+                        transform=""rotate(-90 60 60)""/>
+                <text x=""60"" y=""64"" text-anchor=""middle"" font-size=""26"" font-weight=""bold"" fill=""#1F3864"">{report.AverageScore}%</text>
+                <text x=""60"" y=""82"" text-anchor=""middle"" font-size=""10"" fill=""#666"">mitjana</text>
+              </svg>";
 
             builder.AppendLine("<section class=\"summary\">");
             builder.AppendLine(svg);
@@ -345,35 +345,49 @@ namespace AccessibilityAnalyzer.Core.Reporting
             // File ranking with details.
             builder.AppendLine("<h2>Fitxers ordenats per puntuaci\u00f3</h2>");
 
-            foreach (AnalysisReport fileReport in report.RankByScore())
+            // Group files by subfolder.
+            var grouped = report.RankByScore()
+                .GroupBy(fileReport => System.IO.Path.GetDirectoryName(fileReport.FileName) ?? string.Empty)
+                .OrderBy(group => group.Key);
+
+            foreach (var group in grouped)
             {
-                string scoreClass = fileReport.Score >= 80 ? "green" : fileReport.Score >= 50 ? "orange" : "red";
-
-                builder.AppendLine("<div class=\"file-card\">");
-                builder.AppendLine(
-                    $"<div class=\"file-header\"><span class=\"score {scoreClass}\">{fileReport.Score}%</span>"
-                    + $"<span class=\"fname\">{Escape(fileReport.FileName)}</span>"
-                    + $"<span class=\"fmeta\">({fileReport.ErrorCount} errors, {fileReport.WarningCount} advert.)</span></div>");
-
-                if (fileReport.Issues.Count == 0)
+                if (!string.IsNullOrEmpty(group.Key))
                 {
-                    builder.AppendLine("<p class=\"clean\">Cap incid\u00e8ncia detectada.</p>");
+                    builder.AppendLine($"<h2>{Escape(group.Key)}</h2>");
                 }
-                else
+
+                foreach (AnalysisReport fileReport in group)
                 {
-                    foreach (KeyValuePair<string, List<AccessibilityIssue>> group in fileReport.GroupByRule())
+                    string displayName = System.IO.Path.GetFileName(fileReport.FileName);
+                    string scoreClass = fileReport.Score >= 80 ? "green" : fileReport.Score >= 50 ? "orange" : "red";
+
+                    builder.AppendLine("<div class=\"file-card\">");
+                    builder.AppendLine(
+                        $"<div class=\"file-header\"><span class=\"score {scoreClass}\">{fileReport.Score}%</span>"
+                        + $"<span class=\"fname\">{Escape(displayName)}</span>"
+                        + $"<span class=\"fmeta\">({fileReport.ErrorCount} errors, {fileReport.WarningCount} advert.)</span></div>");
+
+                    if (fileReport.Issues.Count == 0)
                     {
-                        foreach (AccessibilityIssue issue in group.Value)
+                        builder.AppendLine("<p class=\"clean\">Cap incid\u00e8ncia detectada.</p>");
+                    }
+                    else
+                    {
+                        foreach (KeyValuePair<string, List<AccessibilityIssue>> ruleGroup in fileReport.GroupByRule())
                         {
-                            string cssClass = GetCategoryClass(issue.Category);
-                            builder.AppendLine(
-                                $"<div class=\"issue {cssClass}\"><span class=\"tag\">{GetCategoryLabel(issue.Category)}</span> "
-                                + $"l\u00ednia {issue.LineNumber} \u2014 {Escape(issue.Message)}</div>");
+                            foreach (AccessibilityIssue issue in ruleGroup.Value)
+                            {
+                                string cssClass = GetCategoryClass(issue.Category);
+                                builder.AppendLine(
+                                    $"<div class=\"issue {cssClass}\"><span class=\"tag\">{GetCategoryLabel(issue.Category)}</span> "
+                                    + $"l\u00ednia {issue.LineNumber} \u2014 {Escape(issue.Message)}</div>");
+                            }
                         }
                     }
-                }
 
-                builder.AppendLine("</div>");
+                    builder.AppendLine("</div>");
+                }
             }
 
             // Footer.
