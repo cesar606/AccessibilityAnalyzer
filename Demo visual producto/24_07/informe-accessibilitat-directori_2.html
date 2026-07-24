@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Informe d'accessibilitat — directori</title>
+<style>
+
+              * { box-sizing: border-box; }
+              body { font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+                     margin: 0; padding: 32px; background: #F7F7F9; color: #333; line-height: 1.5; }
+              .wrap { max-width: 1000px; margin: 0 auto; }
+              header { background: #fff; border: 1px solid #ddd; border-radius: 8px;
+                       padding: 24px; margin-bottom: 24px; }
+              h1 { margin: 0 0 4px; font-size: 22px; color: #1F3864; }
+              .file { color: #666; font-size: 14px; }
+              .summary { display: flex; gap: 32px; align-items: center; flex-wrap: wrap;
+                         background: #fff; border: 1px solid #ddd; border-radius: 8px;
+                         padding: 24px; margin-bottom: 24px; }
+              .counts { flex: 1; min-width: 260px; }
+              .count { display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+                       border-radius: 6px; margin-bottom: 8px; font-size: 14px; }
+              .count .icon { font-weight: bold; font-size: 16px; }
+              .count.error   { background: #FBEBEB; color: #A5281B; }
+              .count.warning { background: #FDF1E3; color: #8A4A10; }
+              .count.manual  { background: #EEF2F7; color: #1F3864; }
+              h2 { font-size: 18px; color: #1F3864; margin: 32px 0 12px; }
+              .file-card { background: #fff; border: 1px solid #eee; border-radius: 8px;
+                           padding: 16px 20px; margin-bottom: 12px; }
+              .file-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+              .score { font-size: 18px; font-weight: bold; min-width: 55px; }
+              .score.green { color: #1E7E45; } .score.orange { color: #8A4A10; } .score.red { color: #A5281B; }
+              .fname { font-size: 15px; color: #333; } .fmeta { font-size: 12px; color: #888; }
+              .issue { border-left: 3px solid #ddd; padding: 4px 12px; margin: 6px 0 6px 55px; font-size: 13px; }
+              .issue.error   { border-left-color: #A5281B; }
+              .issue.warning { border-left-color: #8A4A10; }
+              .issue.manual  { border-left-color: #1F3864; }
+              .tag { font-size: 11px; font-weight: bold; }
+              .issue.error .tag   { color: #A5281B; }
+              .issue.warning .tag { color: #8A4A10; }
+              .issue.manual .tag  { color: #1F3864; }
+              .clean { color: #1E7E45; font-size: 13px; margin-left: 55px; }
+              footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #ddd;
+                       font-size: 12px; color: #888; }
+            
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Informe d'accessibilitat de directori</h1>
+<p class="file">12 fitxers analitzats — puntuació mitjana: <strong>97 %</strong></p>
+</header>
+<section class="summary">
+
+              <svg width="150" height="150" viewBox="0 0 120 120" role="img"
+                   aria-label="Puntuaci\u00f3 mitjana d'accessibilitat: 97 per cent">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="#E8E8E8" stroke-width="12"/>
+                <circle cx="60" cy="60" r="52" fill="none" stroke="#1E7E45" stroke-width="12"
+                        stroke-linecap="round" stroke-dasharray="317.2 327"
+                        transform="rotate(-90 60 60)"/>
+                <text x="60" y="64" text-anchor="middle" font-size="26" font-weight="bold" fill="#1F3864">97%</text>
+                <text x="60" y="82" text-anchor="middle" font-size="10" fill="#666">mitjana</text>
+              </svg>
+<div class="counts">
+<div class="count error"><span class="icon" aria-hidden="true">✕</span> 16 errors confirmats</div>
+<div class="count warning"><span class="icon" aria-hidden="true">!</span> 6 advertiments</div>
+<div class="count manual"><span class="icon" aria-hidden="true">?</span> 5 revisions manuals</div>
+</div>
+</section>
+<h2>Fitxers ordenats per puntuació</h2>
+<h2>Microsoft_WPF_SAMPLES</h2>
+<div class="file-card">
+<div class="file-header"><span class="score orange">79%</span><span class="fname">MainWindow5.xaml</span><span class="fmeta">(3 errors, 1 advert.)</span></div>
+<div class="issue error"><span class="tag">ERROR</span> línia 39 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 40 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 41 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue warning"><span class="tag">ADVERTIMENT</span> línia 19 — La mida de lletra (14) del control 'TextBlock' és inferior al mínim recomanat (18).</div>
+</div>
+<div class="file-card">
+<div class="file-header"><span class="score green">84%</span><span class="fname">MainWindow4.xaml</span><span class="fmeta">(11 errors, 3 advert.)</span></div>
+<div class="issue error"><span class="tag">ERROR</span> línia 68 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 69 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 70 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 75 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 76 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 77 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 89 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 97 — El control 'Button' no exposa cap nom accessible.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 119 — L'element gràfic 'Image' no proporciona cap alternativa textual.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 124 — L'element gràfic 'Image' no proporciona cap alternativa textual.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 129 — L'element gràfic 'Image' no proporciona cap alternativa textual.</div>
+<div class="issue manual"><span class="tag">REVISIÓ MANUAL</span> línia 120 — No es pot determinar el color del text del control 'TextBlock' de manera estàtica: cal revisió manual.</div>
+<div class="issue manual"><span class="tag">REVISIÓ MANUAL</span> línia 125 — No es pot determinar el color del text del control 'TextBlock' de manera estàtica: cal revisió manual.</div>
+<div class="issue manual"><span class="tag">REVISIÓ MANUAL</span> línia 130 — No es pot determinar el color del text del control 'TextBlock' de manera estàtica: cal revisió manual.</div>
+<div class="issue warning"><span class="tag">ADVERTIMENT</span> línia 120 — La mida de lletra (12) del control 'TextBlock' és inferior al mínim recomanat (18).</div>
+<div class="issue warning"><span class="tag">ADVERTIMENT</span> línia 125 — La mida de lletra (12) del control 'TextBlock' és inferior al mínim recomanat (18).</div>
+<div class="issue warning"><span class="tag">ADVERTIMENT</span> línia 130 — La mida de lletra (12) del control 'TextBlock' és inferior al mínim recomanat (18).</div>
+</div>
+<div class="file-card">
+<div class="file-header"><span class="score green">100%</span><span class="fname">App.xaml</span><span class="fmeta">(0 errors, 0 advert.)</span></div>
+<p class="clean">Cap incidència detectada.</p>
+</div>
+<div class="file-card">
+<div class="file-header"><span class="score green">100%</span><span class="fname">MainWindow.xaml</span><span class="fmeta">(0 errors, 0 advert.)</span></div>
+<p class="clean">Cap incidència detectada.</p>
+</div>
+<div class="file-card">
+<div class="file-header"><span class="score green">100%</span><span class="fname">MainWindow2.xaml</span><span class="fmeta">(0 errors, 0 advert.)</span></div>
+<p class="clean">Cap incidència detectada.</p>
+</div>
+<div class="file-card">
+<div class="file-header"><span class="score green">100%</span><span class="fname">MainWindow6.xaml</span><span class="fmeta">(0 errors, 0 advert.)</span></div>
+<p class="clean">Cap incidència detectada.</p>
+</div>
+<h2>Prism-Samples-Wpf</h2>
+<div class="file-card">
+<div class="file-header"><span class="score green">100%</span><span class="fname">App2.xaml</span><span class="fmeta">(0 errors, 0 advert.)</span></div>
+<p class="clean">Cap incidència detectada.</p>
+</div>
+<div class="file-card">
+<div class="file-header"><span class="score green">100%</span><span class="fname">MainWindow3.xaml</span><span class="fmeta">(0 errors, 0 advert.)</span></div>
+<p class="clean">Cap incidència detectada.</p>
+</div>
+<div class="file-card">
+<div class="file-header"><span class="score green">100%</span><span class="fname">ViewA.xaml</span><span class="fmeta">(0 errors, 0 advert.)</span></div>
+<p class="clean">Cap incidència detectada.</p>
+</div>
+<h2>syncfusion-wpf-samples</h2>
+<div class="file-card">
+<div class="file-header"><span class="score green">96%</span><span class="fname">DatePickerDemo.xaml</span><span class="fmeta">(2 errors, 2 advert.)</span></div>
+<div class="issue error"><span class="tag">ERROR</span> línia 26 — L'element gràfic 'Image' no proporciona cap alternativa textual.</div>
+<div class="issue error"><span class="tag">ERROR</span> línia 54 — L'element gràfic 'Image' no proporciona cap alternativa textual.</div>
+<div class="issue manual"><span class="tag">REVISIÓ MANUAL</span> línia 179 — No es pot determinar el color del text del control 'TextBlock' de manera estàtica: cal revisió manual.</div>
+<div class="issue warning"><span class="tag">ADVERTIMENT</span> línia 41 — La mida de lletra (12) del control 'TextBlock' és inferior al mínim recomanat (18).</div>
+<div class="issue warning"><span class="tag">ADVERTIMENT</span> línia 69 — La mida de lletra (12) del control 'TextBlock' és inferior al mínim recomanat (18).</div>
+</div>
+<div class="file-card">
+<div class="file-header"><span class="score green">100%</span><span class="fname">App3.xaml</span><span class="fmeta">(0 errors, 0 advert.)</span></div>
+<p class="clean">Cap incidència detectada.</p>
+</div>
+<div class="file-card">
+<div class="file-header"><span class="score green">100%</span><span class="fname">TimePickerDemo.xaml</span><span class="fmeta">(0 errors, 0 advert.)</span></div>
+<div class="issue manual"><span class="tag">REVISIÓ MANUAL</span> línia 116 — No es pot determinar el color del text del control 'TextBlock' de manera estàtica: cal revisió manual.</div>
+</div>
+<footer>
+<p>Generat el 24/07/2026 14:11 per l'Avaluador estàtic d'accessibilitat per a interfícies WPF/XAML.</p>
+<p>Criteris basats en WCAG 2.2, WCAG2ICT i EN 301 549.</p>
+</footer>
+</div></body></html>
