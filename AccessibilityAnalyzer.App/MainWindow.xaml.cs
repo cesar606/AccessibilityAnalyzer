@@ -168,6 +168,8 @@ namespace AccessibilityAnalyzer.App
         /// <param name="report">The report to display.</param>
         private void DisplayReport(AnalysisReport report)
         {
+            this.SummaryPanel.Visibility = Visibility.Visible;
+            this.IssuesTitle.Visibility = Visibility.Visible;
             this._currentReport = report;
             this._currentFolderReport = null;
             this.WelcomePanel.Visibility = Visibility.Collapsed;
@@ -199,6 +201,8 @@ namespace AccessibilityAnalyzer.App
         private void DisplayFolderReport(FolderAnalysisReport report)
         {
             // The export button targets a single report, so it is disabled for folders.
+            this.SummaryPanel.Visibility = Visibility.Visible;
+            this.IssuesTitle.Visibility = Visibility.Visible;
             this._currentReport = null;
             this._currentFolderReport = report;
             this.ExportButton.IsEnabled = true;
@@ -662,6 +666,50 @@ namespace AccessibilityAnalyzer.App
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
             }
+        }
+
+        /// <summary>
+        /// Shows information about the tool, its normative basis and how to
+        /// interpret the results.
+        /// </summary>
+        /// <param name="sender">The control that raised the event.</param>
+        /// <param name="e">The event data.</param>
+        private void OnAboutClick(object sender, RoutedEventArgs e)
+        {
+            string message =
+                "Avaluador estàtic d'accessibilitat per a interfícies WPF/XAML\n"
+                + "Treball de Fi de Grau — Cesar Gallardo Rodriguez\n"
+                + "Universitat de Lleida — Campus Igualada-UdL\n\n"
+
+                + "L'eina analitza fitxers XAML d'aplicacions WPF sense executar-les "
+                + "i hi detecta incompliments d'accessibilitat traçables a la normativa "
+                + "europea: WCAG 2.2, WCAG2ICT i EN 301 549.\n\n"
+
+                + "Com interpretar els resultats:\n\n"
+
+                + "• ERROR — Incompliment confirmat. Cal corregir-lo.\n"
+                + "• ADVERTIMENT — Molt probable, però convé revisar-lo.\n"
+                + "• REVISIÓ MANUAL — L'eina no pot decidir-ho: cal verificació humana.\n\n"
+
+                + "La puntuació (0–100) reflecteix només el que s'ha pogut verificar "
+                + "estàticament. Les revisions manuals NO penalitzen la puntuació, "
+                + "però no s'han d'ignorar.\n\n"
+
+                + "Regles implementades:\n"
+                + "R1 — Nom accessible absent (4.1.2)\n"
+                + "R2 — Alternativa textual absent (1.1.1)\n"
+                + "R3 — Nom buit o duplicat (4.1.2)\n"
+                + "R4 — Contrast insuficient (1.4.3)\n"
+                + "R5 — Mida de lletra petita (1.4.4)\n"
+                + "R6 — Operabilitat per teclat (2.1.1 / 2.4.3)\n"
+                + "R7 — Mida de l'objectiu insuficient (2.5.8)\n"
+                + "R8 — Colors indistingibles per daltonisme (1.4.1)";
+
+            MessageBox.Show(
+                message,
+                "Sobre l'eina",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
         }
     }
 }

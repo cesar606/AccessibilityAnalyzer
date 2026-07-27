@@ -84,6 +84,14 @@
                            Margin="24,0,0,0"
                            FontSize="14"
                            Foreground="#666666" />
+
+                <Button x:Name="AboutButton"
+                        Content="ℹ  Sobre l'eina"
+                        AutomationProperties.Name="Informació sobre l'eina i com interpretar els resultats"
+                        Click="OnAboutClick"
+                        Style="{StaticResource ModernButton}"
+                        Background="#E8EBF0" Foreground="#333333"
+                        Margin="10,0,0,0" />
             </StackPanel>
         </Border>
 
@@ -95,8 +103,9 @@
             </Grid.ColumnDefinitions>
 
             <!-- PANELL ESQUERRE: RESUM -->
-            <Border Grid.Column="0" Background="#FFFFFF" CornerRadius="10"
-                    Padding="24" Margin="0,0,16,0">
+            <Border x:Name="SummaryPanel" Grid.Column="0" Background="#FFFFFF" CornerRadius="10"
+                    Padding="24" Margin="0,0,16,0"
+                    Visibility="Collapsed">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="8" ShadowDepth="1"
                                       Opacity="0.08" Color="#000000" />
@@ -188,30 +197,30 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0"
+                    <TextBlock x:Name="IssuesTitle" Grid.Row="0"
                                Text="Incidències detectades"
                                FontSize="17"
                                FontWeight="SemiBold"
                                Foreground="#1F3864"
-                               Margin="0,0,0,14" />
-                    
+                               Margin="0,0,0,14"
+                               Visibility="Collapsed" />
+
                     <StackPanel x:Name="WelcomePanel"
                                 Grid.Row="1"
                                 VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                Margin="0,60,0,0">
-                        <TextBlock Text="Benvingut"
-                                   FontSize="24" FontWeight="SemiBold"
+                                HorizontalAlignment="Center">
+                        <TextBlock Text="Avaluador d'accessibilitat WPF/XAML"
+                                   FontSize="26" FontWeight="SemiBold"
                                    Foreground="#1F3864"
                                    HorizontalAlignment="Center"
-                                   Margin="0,0,0,10" />
+                                   Margin="0,0,0,8" />
                         <TextBlock Text="Carrega un fitxer XAML o una carpeta per començar, o arrossega'l directament a aquesta finestra."
                                    FontSize="14" Foreground="#888888"
                                    TextWrapping="Wrap" TextAlignment="Center"
-                                   MaxWidth="400"
+                                   MaxWidth="450"
                                    HorizontalAlignment="Center" />
                     </StackPanel>
-                    
+
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel x:Name="IssuesPanel" />
                     </ScrollViewer>
