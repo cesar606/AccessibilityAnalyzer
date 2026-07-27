@@ -5,7 +5,9 @@
         Title="Avaluador d'accessibilitat WPF/XAML"
         Height="750" Width="1200"
         Background="#F0F2F5"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        AllowDrop="True"
+        Drop="OnDrop">
 
     <Window.Resources>
         <!-- Estil modern per als botons -->
@@ -203,7 +205,7 @@
                                    Foreground="#1F3864"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,10" />
-                        <TextBlock Text="Carrega un fitxer XAML o una carpeta per començar l'anàlisi d'accessibilitat."
+                        <TextBlock Text="Carrega un fitxer XAML o una carpeta per començar, o arrossega'l directament a aquesta finestra."
                                    FontSize="14" Foreground="#888888"
                                    TextWrapping="Wrap" TextAlignment="Center"
                                    MaxWidth="400"

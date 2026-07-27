@@ -600,5 +600,68 @@ namespace AccessibilityAnalyzer.App
                 }
             }
         }
+
+        /// <summary>
+        /// Handles files or folders dropped onto the window. If a single XAML file
+        /// is dropped, it is analysed as a file. If a folder is dropped, every
+        /// XAML file inside it is analysed. Multiple XAML files are also accepted
+        /// by analysing the folder that contains them.
+        /// </summary>
+        /// <param name="sender">The control that raised the event.</param>
+        /// <param name="e">The event data.</param>
+        private void OnDrop(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                return;
+            }
+
+            string[]? paths = e.Data.GetData(DataFormats.FileDrop) as string[];
+
+            if (paths is null || paths.Length == 0)
+            {
+                return;
+            }
+
+            string path = paths[0];
+
+            if (System.IO.Directory.Exists(path))
+            {
+                // A folder was dropped: analyse the whole directory.
+                this._lastLoadedPath = path;
+                this._lastWasFolder = true;
+
+                FolderAnalysisReport folderReport =
+                    this._engine.GenerateFolderReport(path, true, this._disabledRuleIds);
+
+                if (folderReport.FileCount == 0)
+                {
+                    MessageBox.Show(
+                        "No s'ha trobat cap fitxer XAML en aquesta carpeta.",
+                        "Sense resultats",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                this.DisplayFolderReport(folderReport);
+            }
+            else if (path.EndsWith(".xaml", System.StringComparison.OrdinalIgnoreCase))
+            {
+                // A XAML file was dropped: analyse it.
+                this._lastLoadedPath = path;
+                this._lastWasFolder = false;
+
+                this.AnalyseFile(path);
+            }
+            else
+            {
+                MessageBox.Show(
+                    "Només es poden analitzar fitxers XAML o carpetes que en continguin.",
+                    "Format no compatible",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+        }
     }
 }
