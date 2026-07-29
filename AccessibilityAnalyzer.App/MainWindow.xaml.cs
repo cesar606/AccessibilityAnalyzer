@@ -66,9 +66,9 @@ namespace AccessibilityAnalyzer.App
         {
             return category switch
             {
-                IssueCategory.Error => "ERROR",
-                IssueCategory.Advertiment => "ADVERTIMENT",
-                _ => "REVISIÓ MANUAL",
+                IssueCategory.Error => Strings.Get("CategoryError"),
+                IssueCategory.Advertiment => Strings.Get("CategoryWarning"),
+                _ => Strings.Get("CategoryManual"),
             };
         }
 
@@ -120,8 +120,8 @@ namespace AccessibilityAnalyzer.App
             if (folderReport.FileCount == 0)
             {
                 MessageBox.Show(
-                    "No s'ha trobat cap fitxer XAML en aquesta carpeta.",
-                    "Sense resultats",
+                    Strings.Get("NoXamlFound"),
+                    string.Empty,
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
                 return;
@@ -148,16 +148,16 @@ namespace AccessibilityAnalyzer.App
             catch (System.Xml.XmlException exception)
             {
                 MessageBox.Show(
-                    $"El fitxer no és un XAML vàlid.\n\n{exception.Message}",
-                    "Error de format",
+                    $"{Strings.Get("XmlError")}\n\n{exception.Message}",
+                    Strings.Get("XmlErrorTitle"),
                     MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                    MessageBoxImage.Warning); ;
             }
             catch (IOException exception)
             {
                 MessageBox.Show(
-                    $"No s'ha pogut llegir el fitxer.\n\n{exception.Message}",
-                    "Error de lectura",
+                    $"{Strings.Get("ReadError")}\n\n{exception.Message}",
+                    Strings.Get("ReadErrorTitle"),
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
             }
@@ -260,7 +260,7 @@ namespace AccessibilityAnalyzer.App
                 {
                     this.IssuesPanel.Children.Add(new TextBlock
                     {
-                        Text = "Arrel",
+                        Text = Strings.Get("RootFolder"),
                         FontSize = 15,
                         FontWeight = FontWeights.SemiBold,
                         Foreground = new SolidColorBrush(Color.FromRgb(0x1F, 0x38, 0x64)),
@@ -298,7 +298,7 @@ namespace AccessibilityAnalyzer.App
 
                     header.Children.Add(new TextBlock
                     {
-                        Text = $"  ({fileReport.ErrorCount} errors, {fileReport.WarningCount} advert.)",
+                        Text = $"  ({fileReport.ErrorCount} {Strings.Get("Error_p")}, {fileReport.WarningCount} {Strings.Get("Warning_p")})",
                         FontSize = 12,
                         Foreground = new SolidColorBrush(Color.FromRgb(0x99, 0x99, 0x99)),
                         VerticalAlignment = VerticalAlignment.Center,
@@ -347,7 +347,7 @@ namespace AccessibilityAnalyzer.App
 
                                 issueLine.Children.Add(new TextBlock
                                 {
-                                    Text = $"  línia {issue.LineNumber} — {issue.Message}",
+                                    Text = $"  {Strings.Get("Line")} {issue.LineNumber} — {issue.Message}",
                                     FontSize = 11,
                                     Foreground = new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55)),
                                     TextWrapping = TextWrapping.Wrap,
@@ -401,7 +401,7 @@ namespace AccessibilityAnalyzer.App
             {
                 this.IssuesPanel.Children.Add(new TextBlock
                 {
-                    Text = "No s'ha detectat cap incidència en aquest fitxer.",
+                    Text = Strings.Get("NoIssues"),
                     FontSize = 14,
                     Foreground = new SolidColorBrush(Color.FromRgb(0x1E, 0x7E, 0x45)),
                     Margin = new Thickness(0, 8, 0, 0),
@@ -552,8 +552,8 @@ namespace AccessibilityAnalyzer.App
                 File.WriteAllText(dialog.FileName, html);
 
                 if (MessageBox.Show(
-                        "Informe desat correctament.\n\nVols obrir-lo ara?",
-                        "Exportació completada",
+                        Strings.Get("ExportSaved"),
+                        Strings.Get("ExportDone"),
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Information) == MessageBoxResult.Yes)
                 {
@@ -563,8 +563,8 @@ namespace AccessibilityAnalyzer.App
             catch (IOException exception)
             {
                 MessageBox.Show(
-                    $"No s'ha pogut desar l'informe.\n\n{exception.Message}",
-                    "Error d'escriptura",
+                    $"{Strings.Get("ExportError")}\n\n{exception.Message}",
+                    Strings.Get("ExportErrorTitle"),
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
             }
@@ -643,10 +643,10 @@ namespace AccessibilityAnalyzer.App
                 if (folderReport.FileCount == 0)
                 {
                     MessageBox.Show(
-                        "No s'ha trobat cap fitxer XAML en aquesta carpeta.",
-                        "Sense resultats",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                      Strings.Get("NoXamlFound"),
+                      string.Empty,
+                      MessageBoxButton.OK,
+                      MessageBoxImage.Information);
                     return;
                 }
 
@@ -663,8 +663,8 @@ namespace AccessibilityAnalyzer.App
             else
             {
                 MessageBox.Show(
-                    "Només es poden analitzar fitxers XAML o carpetes que en continguin.",
-                    "Format no compatible",
+                    Strings.Get("XamlOnly"),
+                    string.Empty,
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
             }
@@ -681,10 +681,10 @@ namespace AccessibilityAnalyzer.App
             string message = Strings.Get("AboutText");
 
             MessageBox.Show(
-                message,
-                "Sobre l'eina",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+              message,
+              Strings.Get("About"),
+              MessageBoxButton.OK,
+              MessageBoxImage.Information);
         }
 
         /// <summary>
@@ -717,6 +717,15 @@ namespace AccessibilityAnalyzer.App
                         }
                     }
                 }
+            }
+            // If a report is loaded, refresh the counters too.
+            if (this._currentReport is not null)
+            {
+                this.DisplayReport(this._currentReport);
+            }
+            else if (this._currentFolderReport is not null)
+            {
+                this.DisplayFolderReport(this._currentFolderReport);
             }
         }
     }

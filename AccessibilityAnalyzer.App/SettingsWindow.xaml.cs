@@ -41,6 +41,7 @@ namespace AccessibilityAnalyzer.App
             this.LanguageSelector.Items.Add("English");
 
             this.LanguageSelector.SelectedIndex = (int)Strings.Current;
+            this.ApplyLanguage();
         }
 
         /// <summary>
@@ -256,6 +257,7 @@ namespace AccessibilityAnalyzer.App
                 this.RulesList.Items.Add(checkBox);
             }
         }
+
         /// <summary>
         /// Updates the active language when the user changes the selection.
         /// </summary>
@@ -264,7 +266,25 @@ namespace AccessibilityAnalyzer.App
             if (this.LanguageSelector.SelectedIndex >= 0)
             {
                 Strings.Current = (Language)this.LanguageSelector.SelectedIndex;
+                this.ApplyLanguage();
             }
         }
+
+        /// <summary>
+        /// Updates all labels to match the current language.
+        /// </summary>
+        private void ApplyLanguage()
+        {
+            this.Title = Strings.Get("SettingsTitle");
+            this.ThresholdsTitle.Text = Strings.Get("Thresholds");
+            this.ThresholdsDesc.Text = Strings.Get("ThresholdsDesc");
+            this.FontSizeLabel.Text = Strings.Get("MinFontSize");
+            this.ContrastLabel.Text = Strings.Get("MinContrast");
+            this.TargetSizeLabel.Text = Strings.Get("MinTargetSize");
+            this.ActiveRulesTitle.Text = Strings.Get("ActiveRules");
+            this.ResetButton.Content = Strings.Get("ResetDefaults");
+            this.AcceptButton.Content = Strings.Get("Accept");
+        }
+
     }
 }

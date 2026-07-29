@@ -2,8 +2,10 @@
 
 namespace AccessibilityAnalyzer.Core.Rules
 {
-    using System.Collections.Generic;
+    using AccessibilityAnalyzer.Core.Localization;
     using AccessibilityAnalyzer.Core.Models;
+    using System.Collections.Generic;
+    using System.Globalization;
 
     /// <summary>
     /// R1: detects interactive controls that do not expose an accessible name,
@@ -32,7 +34,7 @@ namespace AccessibilityAnalyzer.Core.Rules
         public string Id => "R1";
 
         /// <inheritdoc/>
-        public string Name => "Nom accessible absent";
+        public string Name => Strings.Get("R1.Name");
 
         /// <inheritdoc/>
         public string Criterion => "WCAG 2.2 - 4.1.2 (A)";
@@ -57,7 +59,7 @@ namespace AccessibilityAnalyzer.Core.Rules
                     RuleId = this.Id,
                     RuleName = this.Name,
                     Criterion = this.Criterion,
-                    Message = $"El control '{element.Name}' no exposa cap nom accessible.",
+                    Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R1.Message"), element.Name),
                     Severity = Severity.Greu,
                     Category = IssueCategory.Error,
                     ElementName = element.Name,

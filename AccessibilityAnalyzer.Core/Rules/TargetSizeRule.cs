@@ -4,6 +4,7 @@ namespace AccessibilityAnalyzer.Core.Rules
 {
     using System.Collections.Generic;
     using System.Globalization;
+    using AccessibilityAnalyzer.Core.Localization;
     using AccessibilityAnalyzer.Core.Models;
 
     /// <summary>
@@ -39,7 +40,7 @@ namespace AccessibilityAnalyzer.Core.Rules
         public string Id => "R7";
 
         /// <inheritdoc/>
-        public string Name => "Mida de l'objectiu insuficient";
+        public string Name => Strings.Get("R7.Name");
 
         /// <inheritdoc/>
         public string Criterion => "WCAG 2.2 - 2.5.8 (AA)";
@@ -66,12 +67,32 @@ namespace AccessibilityAnalyzer.Core.Rules
 
                 if (hasWidth && width < this._settings.MinimumTargetSize)
                 {
-                    yield return this.CreateIssue(element, "amplada", width);
+                    yield return new AccessibilityIssue
+                    {
+                        RuleId = this.Id,
+                        RuleName = this.Name,
+                        Criterion = this.Criterion,
+                        Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R7.Width"), element.Name, width, this._settings.MinimumTargetSize),
+                        Severity = Severity.Moderada,
+                        Category = IssueCategory.Advertiment,
+                        ElementName = element.Name,
+                        LineNumber = element.LineNumber,
+                    };
                 }
 
                 if (hasHeight && height < this._settings.MinimumTargetSize)
                 {
-                    yield return this.CreateIssue(element, "alçada", height);
+                    yield return new AccessibilityIssue
+                    {
+                        RuleId = this.Id,
+                        RuleName = this.Name,
+                        Criterion = this.Criterion,
+                        Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R7.Height"), element.Name, height, this._settings.MinimumTargetSize),
+                        Severity = Severity.Moderada,
+                        Category = IssueCategory.Advertiment,
+                        ElementName = element.Name,
+                        LineNumber = element.LineNumber,
+                    };
                 }
             }
         }

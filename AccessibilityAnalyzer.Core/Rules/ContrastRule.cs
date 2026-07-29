@@ -5,6 +5,7 @@ namespace AccessibilityAnalyzer.Core.Rules
     using System.Collections.Generic;
     using System.Globalization;
     using AccessibilityAnalyzer.Core.Analysis;
+    using AccessibilityAnalyzer.Core.Localization;
     using AccessibilityAnalyzer.Core.Models;
 
     /// <summary>
@@ -41,7 +42,7 @@ namespace AccessibilityAnalyzer.Core.Rules
         public string Id => "R4";
 
         /// <inheritdoc/>
-        public string Name => "Contrast insuficient";
+        public string Name => Strings.Get("R4.Name");
 
         /// <inheritdoc/>
         public string Criterion => "WCAG 2.2 - 1.4.3 (AA)";
@@ -98,9 +99,7 @@ namespace AccessibilityAnalyzer.Core.Rules
                     RuleId = this.Id,
                     RuleName = this.Name,
                     Criterion = this.Criterion,
-                    Message = $"El contrast del control '{element.Name}' és de "
-                        + $"{ratio.ToString("F2", CultureInfo.InvariantCulture)}:1, "
-                        + $"inferior al mínim exigit ({required.ToString("F1", CultureInfo.InvariantCulture)}:1).",
+                    Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R4.Error"), element.Name, ratio.ToString("F2", CultureInfo.InvariantCulture) + ":1", required.ToString("F1", CultureInfo.InvariantCulture) + ":1"),
                     Severity = Severity.Greu,
                     Category = IssueCategory.Error,
                     ElementName = element.Name,
@@ -167,8 +166,7 @@ namespace AccessibilityAnalyzer.Core.Rules
                 RuleId = this.Id,
                 RuleName = this.Name,
                 Criterion = this.Criterion,
-                Message = $"No es pot determinar {reason} del control '{element.Name}' "
-                    + "de manera estàtica: cal revisió manual.",
+                Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R4.Manual"), element.Name),
                 Severity = Severity.Greu,
                 Category = IssueCategory.RevisioManual,
                 ElementName = element.Name,

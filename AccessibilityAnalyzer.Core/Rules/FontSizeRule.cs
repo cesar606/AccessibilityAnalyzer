@@ -2,9 +2,11 @@
 
 namespace AccessibilityAnalyzer.Core.Rules
 {
-    using System.Collections.Generic;
-    using System.Globalization;
+    using AccessibilityAnalyzer.Core.Localization;
     using AccessibilityAnalyzer.Core.Models;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Globalization;
 
     /// <summary>
     /// R5: detects text declared with a font size below the configured minimum,
@@ -27,7 +29,7 @@ namespace AccessibilityAnalyzer.Core.Rules
         public string Id => "R5";
 
         /// <inheritdoc/>
-        public string Name => "Mida de lletra petita";
+        public string Name => Strings.Get("R5.Name");
 
         /// <inheritdoc/>
         public string Criterion => "WCAG 2.2 - 1.4.4 (AA)";
@@ -61,8 +63,7 @@ namespace AccessibilityAnalyzer.Core.Rules
                     RuleId = this.Id,
                     RuleName = this.Name,
                     Criterion = this.Criterion,
-                    Message = $"La mida de lletra ({fontSize}) del control '{element.Name}' "
-                        + $"és inferior al mínim recomanat ({this._settings.MinimumFontSize}).",
+                    Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R5.Message"), fontSize, element.Name, this._settings.MinimumFontSize),
                     Severity = Severity.Moderada,
                     Category = IssueCategory.Advertiment,
                     ElementName = element.Name,

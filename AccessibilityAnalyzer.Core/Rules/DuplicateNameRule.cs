@@ -2,9 +2,12 @@
 
 namespace AccessibilityAnalyzer.Core.Rules
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    using AccessibilityAnalyzer.Core.Localization;
     using AccessibilityAnalyzer.Core.Models;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Xml.Linq;
 
     /// <summary>
     /// R3: detects accessible names that are empty or repeated across different
@@ -16,7 +19,7 @@ namespace AccessibilityAnalyzer.Core.Rules
         public string Id => "R3";
 
         /// <inheritdoc/>
-        public string Name => "Nom buit o duplicat";
+        public string Name => Strings.Get("R3.Name");
 
         /// <inheritdoc/>
         public string Criterion => "WCAG 2.2 - 4.1.2 (A)";
@@ -37,7 +40,7 @@ namespace AccessibilityAnalyzer.Core.Rules
                         RuleId = this.Id,
                         RuleName = this.Name,
                         Criterion = this.Criterion,
-                        Message = $"El control '{element.Name}' declara un nom accessible buit.",
+                        Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R3.Empty"), element.Name),
                         Severity = Severity.Greu,
                         Category = IssueCategory.Error,
                         ElementName = element.Name,
@@ -61,7 +64,7 @@ namespace AccessibilityAnalyzer.Core.Rules
                         RuleId = this.Id,
                         RuleName = this.Name,
                         Criterion = this.Criterion,
-                        Message = $"El nom accessible '{group.Key}' està duplicat en més d'un control.",
+                        Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R3.Duplicate"), group.Key),
                         Severity = Severity.Moderada,
                         Category = IssueCategory.Advertiment,
                         ElementName = element.Name,

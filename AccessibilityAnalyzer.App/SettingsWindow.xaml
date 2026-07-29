@@ -30,12 +30,12 @@
         </StackPanel>
         
         <TextBlock Grid.Row="1"
-                   Text="Llindars d'anàlisi"
+                   x:Name="ThresholdsTitle" Text="Llindars d'anàlisi"
                    FontSize="18" FontWeight="Bold"
                    Foreground="#1F3864"
                    Margin="0,0,0,4" />
         <TextBlock Grid.Row="2"
-                   Text="Ajusta els valors mínims que l'eina considerarà acceptables."
+                   x:Name="ThresholdsDesc" Text="Ajusta els valors mínims que l'eina considerarà acceptables."
                    FontSize="13" Foreground="#555555"
                    TextWrapping="Wrap"
                    Margin="0,0,0,20" />
@@ -43,7 +43,7 @@
         
         <!-- Mida minima de lletra -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,16">
-            <TextBlock Text="Mida mínima de lletra (px):"
+            <TextBlock x:Name="FontSizeLabel" Text="Mida mínima de lletra (px):"
                        Width="200" VerticalAlignment="Center"
                        FontSize="14" Foreground="#333333" />
             <TextBox x:Name="FontSizeInput"
@@ -59,7 +59,7 @@
         <!-- Ratio de contrast -->
         <StackPanel Grid.Row="4" Margin="0,0,0,16">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Ràtio mínim de contrast:"
+                <TextBlock x:Name="ContrastLabel" Text="Ràtio mínim de contrast:"
                            Width="200" VerticalAlignment="Center"
                            FontSize="14" Foreground="#333333" />
                 <TextBox x:Name="ContrastInput"
@@ -80,7 +80,7 @@
 
         <!-- Mida minima de l'objectiu -->
         <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,16">
-            <TextBlock Text="Mida mínima de l'objectiu (px):"
+            <TextBlock x:Name="TargetSizeLabel" Text="Mida mínima de l'objectiu (px):"
                        Width="200" VerticalAlignment="Center"
                        FontSize="14" Foreground="#333333" />
             <TextBox x:Name="TargetSizeInput"
@@ -94,7 +94,7 @@
 
         <!-- Regles actives -->
         <StackPanel Grid.Row="6" Margin="0,4,0,12">
-            <TextBlock Text="Regles actives"
+            <TextBlock x:Name="ActiveRulesTitle" Text="Regles actives"
                        FontSize="15" FontWeight="Bold"
                        Foreground="#1F3864"
                        Margin="0,0,0,8" />

@@ -3,6 +3,7 @@
 namespace AccessibilityAnalyzer.Core.Rules
 {
     using AccessibilityAnalyzer.Core.Analysis;
+    using AccessibilityAnalyzer.Core.Localization;
     using AccessibilityAnalyzer.Core.Models;
     using System.Collections.Generic;
     using System.Drawing;
@@ -32,7 +33,7 @@ namespace AccessibilityAnalyzer.Core.Rules
         public string Id => "R8";
 
         /// <inheritdoc/>
-        public string Name => "Colors indistingibles per daltonisme";
+        public string Name => Strings.Get("R8.Name");
 
         /// <inheritdoc/>
         public string Criterion => "WCAG 2.2 - 1.4.1 (A)";
@@ -69,8 +70,7 @@ namespace AccessibilityAnalyzer.Core.Rules
                         RuleId = this.Id,
                         RuleName = this.Name,
                         Criterion = this.Criterion,
-                        Message = $"Els colors {this.Format(first)} i {this.Format(second)} es poden "
-                            + $"confondre sota {deficiency}. Si transmeten informació pel color, cal revisar-ho.",
+                        Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R8.Message"), Format(first), Format(second), deficiency),
                         Severity = Severity.Moderada,
                         Category = IssueCategory.RevisioManual,
                         ElementName = colors[j].Element.Name,
@@ -144,9 +144,9 @@ namespace AccessibilityAnalyzer.Core.Rules
         {
             return deficiency switch
             {
-                ColorBlindnessSimulator.Deficiency.Protanopia => "protanopia",
-                ColorBlindnessSimulator.Deficiency.Deuteranopia => "deuteranopia",
-                _ => "tritanopia",
+                ColorBlindnessSimulator.Deficiency.Protanopia => Strings.Get("R8.Protanopia"),
+                ColorBlindnessSimulator.Deficiency.Deuteranopia => Strings.Get("R8.Deuteranopia"),
+                _ => Strings.Get("R8.Tritanopia"),
             };
         }
 

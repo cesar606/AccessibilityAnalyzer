@@ -2,8 +2,10 @@
 
 namespace AccessibilityAnalyzer.Core.Rules
 {
-    using System.Collections.Generic;
+    using AccessibilityAnalyzer.Core.Localization;
     using AccessibilityAnalyzer.Core.Models;
+    using System.Collections.Generic;
+    using System.Globalization;
 
     /// <summary>
     /// R2: detects non-text content, such as images and icons, that does not provide
@@ -27,7 +29,7 @@ namespace AccessibilityAnalyzer.Core.Rules
         public string Id => "R2";
 
         /// <inheritdoc/>
-        public string Name => "Alternativa textual absent";
+        public string Name => Strings.Get("R2.Name");
 
         /// <inheritdoc/>
         public string Criterion => "WCAG 2.2 - 1.1.1 (A)";
@@ -60,7 +62,7 @@ namespace AccessibilityAnalyzer.Core.Rules
                     RuleId = this.Id,
                     RuleName = this.Name,
                     Criterion = this.Criterion,
-                    Message = $"L'element gràfic '{element.Name}' no proporciona cap alternativa textual.",
+                    Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R2.Message"), element.Name),
                     Severity = Severity.Greu,
                     Category = IssueCategory.Error,
                     ElementName = element.Name,

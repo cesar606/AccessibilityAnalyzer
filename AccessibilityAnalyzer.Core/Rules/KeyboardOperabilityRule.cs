@@ -5,6 +5,7 @@ namespace AccessibilityAnalyzer.Core.Rules
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using AccessibilityAnalyzer.Core.Localization;
     using AccessibilityAnalyzer.Core.Models;
 
     /// <summary>
@@ -36,7 +37,7 @@ namespace AccessibilityAnalyzer.Core.Rules
         public string Id => "R6";
 
         /// <inheritdoc/>
-        public string Name => "Operabilitat per teclat";
+        public string Name => Strings.Get("R6.Name");
 
         /// <inheritdoc/>
         public string Criterion => "WCAG 2.2 - 2.1.1 / 2.4.3 (A)";
@@ -64,8 +65,7 @@ namespace AccessibilityAnalyzer.Core.Rules
                         RuleId = this.Id,
                         RuleName = this.Name,
                         Criterion = this.Criterion,
-                        Message = $"El control '{element.Name}' està exclòs de la navegació "
-                            + "per teclat (IsTabStop=\"False\").",
+                        Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R6.TabStop"), element.Name),
                         Severity = Severity.Greu,
                         Category = IssueCategory.Error,
                         ElementName = element.Name,
@@ -106,8 +106,7 @@ namespace AccessibilityAnalyzer.Core.Rules
                         RuleId = this.Id,
                         RuleName = this.Name,
                         Criterion = this.Criterion,
-                        Message = $"L'ordre de tabulació és parcial: el control '{element.Name}' "
-                            + "no declara TabIndex mentre que altres controls sí ho fan.",
+                        Message = string.Format(CultureInfo.InvariantCulture, Strings.Get("R6.Focusable"), element.Name),
                         Severity = Severity.Moderada,
                         Category = IssueCategory.Advertiment,
                         ElementName = element.Name,
