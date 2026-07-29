@@ -14,35 +14,35 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0"
+        <!-- Idioma -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
+            <TextBlock Text="Idioma / Language:"
+                       Width="200" VerticalAlignment="Center"
+                       FontSize="14" Foreground="#333333" />
+            <ComboBox x:Name="LanguageSelector"
+                      Width="160" FontSize="14"
+                      SelectionChanged="OnLanguageChanged" />
+        </StackPanel>
+        
+        <TextBlock Grid.Row="1"
                    Text="Llindars d'anàlisi"
                    FontSize="18" FontWeight="Bold"
                    Foreground="#1F3864"
                    Margin="0,0,0,4" />
-        <TextBlock Grid.Row="1"
+        <TextBlock Grid.Row="2"
                    Text="Ajusta els valors mínims que l'eina considerarà acceptables."
                    FontSize="13" Foreground="#555555"
                    TextWrapping="Wrap"
                    Margin="0,0,0,20" />
 
-
-        <!-- Regles actives -->
-        <StackPanel Grid.Row="5" Margin="0,4,0,12">
-            <TextBlock Text="Regles actives"
-                       FontSize="15" FontWeight="Bold"
-                       Foreground="#1F3864"
-                       Margin="0,0,0,8" />
-            <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="RulesList" />
-            </ScrollViewer>
-        </StackPanel>
         
         <!-- Mida minima de lletra -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,16">
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,16">
             <TextBlock Text="Mida mínima de lletra (px):"
                        Width="200" VerticalAlignment="Center"
                        FontSize="14" Foreground="#333333" />
@@ -57,7 +57,7 @@
         </StackPanel>
 
         <!-- Ratio de contrast -->
-        <StackPanel Grid.Row="3" Margin="0,0,0,16">
+        <StackPanel Grid.Row="4" Margin="0,0,0,16">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Ràtio mínim de contrast:"
                            Width="200" VerticalAlignment="Center"
@@ -79,7 +79,7 @@
         </StackPanel>
 
         <!-- Mida minima de l'objectiu -->
-        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,0,0,16">
+        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,0,0,16">
             <TextBlock Text="Mida mínima de l'objectiu (px):"
                        Width="200" VerticalAlignment="Center"
                        FontSize="14" Foreground="#333333" />
@@ -92,8 +92,19 @@
                     Width="24" Height="24" />
         </StackPanel>
 
+        <!-- Regles actives -->
+        <StackPanel Grid.Row="6" Margin="0,4,0,12">
+            <TextBlock Text="Regles actives"
+                       FontSize="15" FontWeight="Bold"
+                       Foreground="#1F3864"
+                       Margin="0,0,0,8" />
+            <ScrollViewer MaxHeight="180" VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="RulesList" />
+            </ScrollViewer>
+        </StackPanel>
+
         <!-- Botons -->
-        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="ResetButton"
                     Content="Restaurar valors per defecte"
                     AutomationProperties.Name="Restaurar els valors per defecte"

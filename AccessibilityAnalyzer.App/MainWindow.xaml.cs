@@ -15,6 +15,7 @@ namespace AccessibilityAnalyzer.App
     using System.Windows.Automation;
     using System.Windows.Controls;
     using System.Windows.Media;
+    using AccessibilityAnalyzer.Core.Localization;
 
     /// <summary>
     /// Interaction logic for MainWindow.
@@ -177,18 +178,17 @@ namespace AccessibilityAnalyzer.App
             this.FileNameText.Text = report.FileName;
             this.Gauge.Score = report.Score;
 
-            this.ErrorCountText.Text = FormatCount(report.ErrorCount, "error", "errors");
-            this.WarningCountText.Text = FormatCount(report.WarningCount, "advertiment", "advertiments");
-            this.ManualCountText.Text = FormatCount(report.ManualReviewCount, "revisió manual", "revisions manuals");
+            this.ErrorCountText.Text = FormatCount(report.ErrorCount, Strings.Get("Error_s"), Strings.Get("Error_p"));
+            this.WarningCountText.Text = FormatCount(report.WarningCount, Strings.Get("Warning_s"), Strings.Get("Warning_p"));
+            this.ManualCountText.Text = FormatCount(report.ManualReviewCount, Strings.Get("Manual_s"), Strings.Get("Manual_p"));
 
             this.ElementCountText.Text = string.Format(
                 CultureInfo.InvariantCulture,
-                "{0} controls analitzats",
+                Strings.Get("ControlsAnalysed"),
                 report.AnalysedElements);
 
-            // The user must know that the score does not cover everything.
             this.ManualWarningText.Text = report.ManualReviewCount > 0
-                ? "Les revisions manuals no es tenen en compte en la puntuació: cal comprovar-les a mà."
+                ? Strings.Get("ManualWarning")
                 : string.Empty;
 
             this.RenderIssues(report);
@@ -207,17 +207,18 @@ namespace AccessibilityAnalyzer.App
             this._currentFolderReport = report;
             this.ExportButton.IsEnabled = true;
             this.WelcomePanel.Visibility = Visibility.Collapsed;
-
-            this.FileNameText.Text = $"{report.FileCount} fitxers analitzats";
             this.Gauge.Score = report.AverageScore;
 
-            this.ErrorCountText.Text = FormatCount(report.TotalErrors, "error", "errors");
-            this.WarningCountText.Text = FormatCount(report.TotalWarnings, "advertiment", "advertiments");
-            this.ManualCountText.Text = FormatCount(report.TotalManualReview, "revisió manual", "revisions manuals");
+            this.FileNameText.Text = string.Format(CultureInfo.InvariantCulture, Strings.Get("FilesAnalysed"), report.FileCount);
 
-            this.ElementCountText.Text = $"Puntuació mitjana de {report.FileCount} fitxers";
+            this.ErrorCountText.Text = FormatCount(report.TotalErrors, Strings.Get("Error_s"), Strings.Get("Error_p"));
+            this.WarningCountText.Text = FormatCount(report.TotalWarnings, Strings.Get("Warning_s"), Strings.Get("Warning_p"));
+            this.ManualCountText.Text = FormatCount(report.TotalManualReview, Strings.Get("Manual_s"), Strings.Get("Manual_p"));
+
+            this.ElementCountText.Text = string.Format(CultureInfo.InvariantCulture, Strings.Get("AverageOf"), report.FileCount);
+
             this.ManualWarningText.Text = report.TotalManualReview > 0
-                ? "Les revisions manuals no es tenen en compte en la puntuació."
+                ? Strings.Get("ManualWarning")
                 : string.Empty;
 
             this.RenderFileRanking(report);
@@ -587,6 +588,7 @@ namespace AccessibilityAnalyzer.App
                 this._settings = dialog.Settings;
                 this._disabledRuleIds = dialog.DisabledRuleIds;
                 this._engine = new AccessibilityAnalyzerEngine(this._settings);
+                this.RefreshLanguage();
 
                 // Re-analyse automatically if something was already loaded.
                 if (this._lastLoadedPath is not null)
@@ -676,40 +678,46 @@ namespace AccessibilityAnalyzer.App
         /// <param name="e">The event data.</param>
         private void OnAboutClick(object sender, RoutedEventArgs e)
         {
-            string message =
-                "Avaluador estàtic d'accessibilitat per a interfícies WPF/XAML\n"
-                + "Treball de Fi de Grau — Cesar Gallardo Rodriguez\n"
-                + "Universitat de Lleida — Campus Igualada-UdL\n\n"
-
-                + "L'eina analitza fitxers XAML d'aplicacions WPF sense executar-les "
-                + "i hi detecta incompliments d'accessibilitat traçables a la normativa "
-                + "europea: WCAG 2.2, WCAG2ICT i EN 301 549.\n\n"
-
-                + "Com interpretar els resultats:\n\n"
-
-                + "• ERROR — Incompliment confirmat. Cal corregir-lo.\n"
-                + "• ADVERTIMENT — Molt probable, però convé revisar-lo.\n"
-                + "• REVISIÓ MANUAL — L'eina no pot decidir-ho: cal verificació humana.\n\n"
-
-                + "La puntuació (0–100) reflecteix només el que s'ha pogut verificar "
-                + "estàticament. Les revisions manuals NO penalitzen la puntuació, "
-                + "però no s'han d'ignorar.\n\n"
-
-                + "Regles implementades:\n"
-                + "R1 — Nom accessible absent (4.1.2)\n"
-                + "R2 — Alternativa textual absent (1.1.1)\n"
-                + "R3 — Nom buit o duplicat (4.1.2)\n"
-                + "R4 — Contrast insuficient (1.4.3)\n"
-                + "R5 — Mida de lletra petita (1.4.4)\n"
-                + "R6 — Operabilitat per teclat (2.1.1 / 2.4.3)\n"
-                + "R7 — Mida de l'objectiu insuficient (2.5.8)\n"
-                + "R8 — Colors indistingibles per daltonisme (1.4.1)";
+            string message = Strings.Get("AboutText");
 
             MessageBox.Show(
                 message,
                 "Sobre l'eina",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
+        }
+
+        /// <summary>
+        /// Updates all user-facing text to match the current language.
+        /// </summary>
+        private void RefreshLanguage()
+        {
+            this.LoadButton.Content = Strings.Get("LoadFile");
+            this.LoadFolderButton.Content = Strings.Get("LoadFolder");
+            this.ExportButton.Content = Strings.Get("ExportHtml");
+            this.SettingsButton.Content = Strings.Get("Settings");
+            this.AboutButton.Content = Strings.Get("About");
+            this.IssuesTitle.Text = Strings.Get("IssuesDetected");
+            this.Title = Strings.Get("WelcomeTitle");
+
+            // Update welcome screen if visible.
+            if (this.WelcomePanel.Visibility == Visibility.Visible)
+            {
+                foreach (var child in this.WelcomePanel.Children)
+                {
+                    if (child is TextBlock tb)
+                    {
+                        if (tb.FontSize > 20)
+                        {
+                            tb.Text = Strings.Get("WelcomeTitle");
+                        }
+                        else
+                        {
+                            tb.Text = Strings.Get("WelcomeMessage");
+                        }
+                    }
+                }
+            }
         }
     }
 }

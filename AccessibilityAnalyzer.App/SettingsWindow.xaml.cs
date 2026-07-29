@@ -11,6 +11,7 @@ namespace AccessibilityAnalyzer.App
     using System.Collections.Generic;
     using System.Windows.Controls;
     using AccessibilityAnalyzer.Core.Rules;
+    using AccessibilityAnalyzer.Core.Localization;
 
     /// <summary>
     /// Dialog that lets the user adjust the configurable analysis thresholds.
@@ -35,6 +36,11 @@ namespace AccessibilityAnalyzer.App
             this.DisabledRuleIds = disabledRuleIds;
             this.LoadValues(settings);
             this.BuildRuleList(rules, disabledRuleIds);
+            this.LanguageSelector.Items.Add("Català");
+            this.LanguageSelector.Items.Add("Castellano");
+            this.LanguageSelector.Items.Add("English");
+
+            this.LanguageSelector.SelectedIndex = (int)Strings.Current;
         }
 
         /// <summary>
@@ -248,6 +254,16 @@ namespace AccessibilityAnalyzer.App
 
                 this._ruleCheckBoxes.Add(checkBox);
                 this.RulesList.Items.Add(checkBox);
+            }
+        }
+        /// <summary>
+        /// Updates the active language when the user changes the selection.
+        /// </summary>
+        private void OnLanguageChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (this.LanguageSelector.SelectedIndex >= 0)
+            {
+                Strings.Current = (Language)this.LanguageSelector.SelectedIndex;
             }
         }
     }
