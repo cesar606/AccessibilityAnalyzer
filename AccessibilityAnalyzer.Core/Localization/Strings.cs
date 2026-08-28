@@ -173,6 +173,10 @@ namespace AccessibilityAnalyzer.Core.Localization
 
                 ["DarkMode"] = "Mode fosc",
                 ["LightMode"] = "Mode clar",
+                ["ExportJson"] = "Exportar JSON",
+                ["ImportReport"] = "Importar informe",
+                ["InvalidReport"] = "El fitxer no conté un informe vàlid.",
+                ["InvalidReportTitle"] = "Format no reconegut",
             },
 
             [Language.Castella] = new Dictionary<string, string>
@@ -287,6 +291,10 @@ namespace AccessibilityAnalyzer.Core.Localization
 
                 ["DarkMode"] = "Modo oscuro",
                 ["LightMode"] = "Modo claro",
+                ["ExportJson"] = "Exportar JSON",
+                ["ImportReport"] = "Importar informe",
+                ["InvalidReport"] = "El fichero no contiene un informe válido.",
+                ["InvalidReportTitle"] = "Formato no reconocido",
             },
 
             [Language.English] = new Dictionary<string, string>
@@ -401,6 +409,11 @@ namespace AccessibilityAnalyzer.Core.Localization
 
                 ["DarkMode"] = "Dark mode",
                 ["LightMode"] = "Light mode",
+                ["ExportJson"] = "Export JSON",
+                ["ImportReport"] = "Import report",
+                ["InvalidReport"] = "The file does not contain a valid report.",
+                ["InvalidReportTitle"] = "Unrecognised format",
+
             },
         };
     }

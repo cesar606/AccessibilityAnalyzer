@@ -6,7 +6,6 @@ namespace AccessibilityAnalyzer.App
     using AccessibilityAnalyzer.Core.Models;
     using AccessibilityAnalyzer.Core.Reporting;
     using Microsoft.Win32;
-    using AccessibilityAnalyzer.Core.Reporting;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Globalization;
@@ -177,6 +176,7 @@ namespace AccessibilityAnalyzer.App
             this.ExportButton.IsEnabled = true;
             this.FileNameText.Text = report.FileName;
             this.Gauge.Score = report.Score;
+            this.ExportJsonButton.IsEnabled = true;
 
             this.ErrorCountText.Text = FormatCount(report.ErrorCount, Strings.Get("Error_s"), Strings.Get("Error_p"));
             this.WarningCountText.Text = FormatCount(report.WarningCount, Strings.Get("Warning_s"), Strings.Get("Warning_p"));
@@ -208,6 +208,7 @@ namespace AccessibilityAnalyzer.App
             this.ExportButton.IsEnabled = true;
             this.WelcomePanel.Visibility = Visibility.Collapsed;
             this.Gauge.Score = report.AverageScore;
+            this.ExportJsonButton.IsEnabled = false;
 
             this.FileNameText.Text = string.Format(CultureInfo.InvariantCulture, Strings.Get("FilesAnalysed"), report.FileCount);
 
@@ -699,6 +700,8 @@ namespace AccessibilityAnalyzer.App
             this.AboutButton.Content = Strings.Get("About");
             this.IssuesTitle.Text = Strings.Get("IssuesDetected");
             this.Title = Strings.Get("WelcomeTitle");
+            this.ExportJsonButton.Content = Strings.Get("ExportJson");
+            this.ImportButton.Content = Strings.Get("ImportReport");
 
             // Update welcome screen if visible.
             if (this.WelcomePanel.Visibility == Visibility.Visible)
@@ -748,6 +751,92 @@ namespace AccessibilityAnalyzer.App
             {
                 ThemeManager.Apply(ThemeManager.Theme.Light);
                 this.ThemeButton.Content = Strings.Get("DarkMode");
+            }
+        }
+
+        /// <summary>
+        /// Exports the current report as a JSON document.
+        /// </summary>
+        private void OnExportJsonClick(object sender, RoutedEventArgs e)
+        {
+            if (this._currentReport is null)
+            {
+                return;
+            }
+
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                Filter = "Document JSON (*.json)|*.json",
+                FileName = $"informe-{Path.GetFileNameWithoutExtension(this._currentReport.FileName)}.json",
+                Title = "Desar l'informe en JSON",
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            try
+            {
+                string json = JsonReportSerializer.Serialize(this._currentReport);
+                File.WriteAllText(dialog.FileName, json);
+
+                MessageBox.Show(
+                    Strings.Get("ExportSaved"),
+                    Strings.Get("ExportDone"),
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Information);
+            }
+            catch (IOException exception)
+            {
+                MessageBox.Show(
+                    $"{Strings.Get("ExportError")}\n\n{exception.Message}",
+                    Strings.Get("ExportErrorTitle"),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+        }
+
+        /// <summary>
+        /// Imports a previously saved JSON report and displays it.
+        /// </summary>
+        private void OnImportClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Filter = "Document JSON (*.json)|*.json",
+                Title = "Obrir un informe JSON",
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            try
+            {
+                string json = File.ReadAllText(dialog.FileName);
+                AnalysisReport? report = JsonReportSerializer.Deserialize(json);
+
+                if (report is null)
+                {
+                    MessageBox.Show(
+                        Strings.Get("InvalidReport"),
+                        Strings.Get("InvalidReportTitle"),
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
+                }
+
+                this.DisplayReport(report);
+            }
+            catch (IOException exception)
+            {
+                MessageBox.Show(
+                    $"{Strings.Get("ReadError")}\n\n{exception.Message}",
+                    Strings.Get("ReadErrorTitle"),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
         }
     }

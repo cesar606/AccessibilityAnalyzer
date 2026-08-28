@@ -44,65 +44,86 @@
                 <DropShadowEffect BlurRadius="8" ShadowDepth="1"
                                   Opacity="0.08" Color="#000000" />
             </Border.Effect>
-            <StackPanel Orientation="Horizontal">
-                <Button x:Name="LoadButton"
-                        Content="Carregar fitxer"
-                        AutomationProperties.Name="Carregar un fitxer XAML per analitzar"
-                        Click="OnLoadFileClick"
-                        Style="{StaticResource ModernButton}"
-                        Background="{DynamicResource ButtonPrimaryBg}" Foreground="#FFFFFF" />
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Disabled">
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="LoadButton"
+                            Content="Carregar fitxer"
+                            AutomationProperties.Name="Carregar un fitxer XAML per analitzar"
+                            Click="OnLoadFileClick"
+                            Style="{StaticResource ModernButton}"
+                            Background="{DynamicResource ButtonPrimaryBg}" Foreground="#FFFFFF" />
 
-                <Button x:Name="LoadFolderButton"
-                        Content="Analitzar carpeta"
-                        AutomationProperties.Name="Analitzar tots els fitxers XAML d'una carpeta"
-                        Click="OnLoadFolderClick"
-                        Style="{StaticResource ModernButton}"
-                        Background="{DynamicResource ButtonPrimaryBg}" Foreground="#FFFFFF"
-                        Margin="10,0,0,0" />
+                    <Button x:Name="LoadFolderButton"
+                            Content="Analitzar carpeta"
+                            AutomationProperties.Name="Analitzar tots els fitxers XAML d'una carpeta"
+                            Click="OnLoadFolderClick"
+                            Style="{StaticResource ModernButton}"
+                            Background="{DynamicResource ButtonPrimaryBg}" Foreground="#FFFFFF"
+                            Margin="10,0,0,0" />
 
-                <Button x:Name="ExportButton"
-                        Content="Exportar HTML"
-                        AutomationProperties.Name="Exportar l'informe en format HTML"
-                        Click="OnExportClick"
-                        IsEnabled="False"
-                        Style="{StaticResource ModernButton}"
-                        Background="{DynamicResource ButtonExportBg}" Foreground="#FFFFFF"
-                        Margin="10,0,0,0" />
+                    <Button x:Name="ExportButton"
+                            Content="Exportar HTML"
+                            AutomationProperties.Name="Exportar l'informe en format HTML"
+                            Click="OnExportClick"
+                            IsEnabled="False"
+                            Style="{StaticResource ModernButton}"
+                            Background="{DynamicResource ButtonExportBg}" Foreground="#FFFFFF"
+                            Margin="10,0,0,0" />
 
-                <Button x:Name="SettingsButton"
-                        Content="Configuració"
-                        AutomationProperties.Name="Obrir la configuració de l'anàlisi"
-                        Click="OnSettingsClick"
-                        Style="{StaticResource ModernButton}"
-                        Background="{DynamicResource ButtonSecondaryBg}"
-                        Foreground="{DynamicResource ButtonSecondaryFg}"
-                        Margin="10,0,0,0" />
+                    <Button x:Name="ExportJsonButton"
+                            Content="Exportar JSON"
+                            AutomationProperties.Name="Exportar l'informe en format JSON"
+                            Click="OnExportJsonClick"
+                            IsEnabled="False"
+                            Style="{StaticResource ModernButton}"
+                            Background="{DynamicResource ButtonExportBg}" Foreground="#FFFFFF"
+                            Margin="10,0,0,0" />
 
-                <TextBlock x:Name="FileNameText"
-                           Text="Cap fitxer carregat"
-                           VerticalAlignment="Center"
-                           Margin="24,0,0,0"
-                           FontSize="14"
-                           Foreground="{DynamicResource TextSecondary}" />
+                    <Button x:Name="ImportButton"
+                            Content="Importar informe"
+                            AutomationProperties.Name="Importar un informe JSON desat anteriorment"
+                            Click="OnImportClick"
+                            Style="{StaticResource ModernButton}"
+                            Background="{DynamicResource ButtonSecondaryBg}"
+                            Foreground="{DynamicResource ButtonSecondaryFg}"
+                            Margin="10,0,0,0" />
 
-                <Button x:Name="AboutButton"
-                        Content="Sobre l'eina"
-                        AutomationProperties.Name="Informació sobre l'eina i com interpretar els resultats"
-                        Click="OnAboutClick"
-                        Style="{StaticResource ModernButton}"
-                        Background="{DynamicResource ButtonSecondaryBg}"
-                        Foreground="{DynamicResource ButtonSecondaryFg}"
-                        Margin="10,0,0,0" />
+                    <Button x:Name="SettingsButton"
+                            Content="Configuració"
+                            AutomationProperties.Name="Obrir la configuració de l'anàlisi"
+                            Click="OnSettingsClick"
+                            Style="{StaticResource ModernButton}"
+                            Background="{DynamicResource ButtonSecondaryBg}"
+                            Foreground="{DynamicResource ButtonSecondaryFg}"
+                            Margin="10,0,0,0" />
 
-                <Button x:Name="ThemeButton"
-                        Content="Mode fosc"
-                        AutomationProperties.Name="Canviar entre mode clar i fosc"
-                        Click="OnThemeClick"
-                        Style="{StaticResource ModernButton}"
-                        Background="{DynamicResource ButtonSecondaryBg}"
-                        Foreground="{DynamicResource ButtonSecondaryFg}"
-                        Margin="10,0,0,0" />
-            </StackPanel>
+                    <TextBlock x:Name="FileNameText"
+                               Text="Cap fitxer carregat"
+                               VerticalAlignment="Center"
+                               Margin="24,0,0,0"
+                               FontSize="14"
+                               Foreground="{DynamicResource TextSecondary}" />
+
+                    <Button x:Name="AboutButton"
+                            Content="Sobre l'eina"
+                            AutomationProperties.Name="Informació sobre l'eina i com interpretar els resultats"
+                            Click="OnAboutClick"
+                            Style="{StaticResource ModernButton}"
+                            Background="{DynamicResource ButtonSecondaryBg}"
+                            Foreground="{DynamicResource ButtonSecondaryFg}"
+                            Margin="10,0,0,0" />
+
+                    <Button x:Name="ThemeButton"
+                            Content="Mode fosc"
+                            AutomationProperties.Name="Canviar entre mode clar i fosc"
+                            Click="OnThemeClick"
+                            Style="{StaticResource ModernButton}"
+                            Background="{DynamicResource ButtonSecondaryBg}"
+                            Foreground="{DynamicResource ButtonSecondaryFg}"
+                            Margin="10,0,0,0" />
+                </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <!-- CONTINGUT -->
