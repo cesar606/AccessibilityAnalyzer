@@ -4,13 +4,12 @@
         xmlns:controls="clr-namespace:AccessibilityAnalyzer.App.Controls"
         Title="Avaluador d'accessibilitat WPF/XAML"
         Height="750" Width="1200"
-        Background="#F0F2F5"
+        Background="{DynamicResource WindowBg}"
         WindowStartupLocation="CenterScreen"
         AllowDrop="True"
         Drop="OnDrop">
 
     <Window.Resources>
-        <!-- Estil modern per als botons -->
         <Style x:Key="ModernButton" TargetType="Button">
             <Setter Property="Padding" Value="18,10" />
             <Setter Property="FontSize" Value="13" />
@@ -39,7 +38,7 @@
         </Grid.RowDefinitions>
 
         <!-- BARRA SUPERIOR -->
-        <Border Grid.Row="0" Background="#FFFFFF" CornerRadius="10"
+        <Border Grid.Row="0" Background="{DynamicResource CardBg}" CornerRadius="10"
                 Padding="20,14" Margin="0,0,0,16">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="8" ShadowDepth="1"
@@ -51,14 +50,14 @@
                         AutomationProperties.Name="Carregar un fitxer XAML per analitzar"
                         Click="OnLoadFileClick"
                         Style="{StaticResource ModernButton}"
-                        Background="#2B5797" Foreground="#FFFFFF" />
+                        Background="{DynamicResource ButtonPrimaryBg}" Foreground="#FFFFFF" />
 
                 <Button x:Name="LoadFolderButton"
                         Content="Analitzar carpeta"
                         AutomationProperties.Name="Analitzar tots els fitxers XAML d'una carpeta"
                         Click="OnLoadFolderClick"
                         Style="{StaticResource ModernButton}"
-                        Background="#2B5797" Foreground="#FFFFFF"
+                        Background="{DynamicResource ButtonPrimaryBg}" Foreground="#FFFFFF"
                         Margin="10,0,0,0" />
 
                 <Button x:Name="ExportButton"
@@ -67,15 +66,16 @@
                         Click="OnExportClick"
                         IsEnabled="False"
                         Style="{StaticResource ModernButton}"
-                        Background="#1E7E45" Foreground="#FFFFFF"
+                        Background="{DynamicResource ButtonExportBg}" Foreground="#FFFFFF"
                         Margin="10,0,0,0" />
 
                 <Button x:Name="SettingsButton"
-                        Content="&#x2699;  Configuració"
+                        Content="Configuració"
                         AutomationProperties.Name="Obrir la configuració de l'anàlisi"
                         Click="OnSettingsClick"
                         Style="{StaticResource ModernButton}"
-                        Background="#E8EBF0" Foreground="#333333"
+                        Background="{DynamicResource ButtonSecondaryBg}"
+                        Foreground="{DynamicResource ButtonSecondaryFg}"
                         Margin="10,0,0,0" />
 
                 <TextBlock x:Name="FileNameText"
@@ -83,14 +83,24 @@
                            VerticalAlignment="Center"
                            Margin="24,0,0,0"
                            FontSize="14"
-                           Foreground="#666666" />
+                           Foreground="{DynamicResource TextSecondary}" />
 
                 <Button x:Name="AboutButton"
-                        Content="ℹ  Sobre l'eina"
+                        Content="Sobre l'eina"
                         AutomationProperties.Name="Informació sobre l'eina i com interpretar els resultats"
                         Click="OnAboutClick"
                         Style="{StaticResource ModernButton}"
-                        Background="#E8EBF0" Foreground="#333333"
+                        Background="{DynamicResource ButtonSecondaryBg}"
+                        Foreground="{DynamicResource ButtonSecondaryFg}"
+                        Margin="10,0,0,0" />
+
+                <Button x:Name="ThemeButton"
+                        Content="Mode fosc"
+                        AutomationProperties.Name="Canviar entre mode clar i fosc"
+                        Click="OnThemeClick"
+                        Style="{StaticResource ModernButton}"
+                        Background="{DynamicResource ButtonSecondaryBg}"
+                        Foreground="{DynamicResource ButtonSecondaryFg}"
                         Margin="10,0,0,0" />
             </StackPanel>
         </Border>
@@ -103,7 +113,8 @@
             </Grid.ColumnDefinitions>
 
             <!-- PANELL ESQUERRE: RESUM -->
-            <Border x:Name="SummaryPanel" Grid.Column="0" Background="#FFFFFF" CornerRadius="10"
+            <Border x:Name="SummaryPanel" Grid.Column="0"
+                    Background="{DynamicResource CardBg}" CornerRadius="10"
                     Padding="24" Margin="0,0,16,0"
                     Visibility="Collapsed">
                 <Border.Effect>
@@ -119,50 +130,50 @@
                     <TextBlock Text="Resum"
                                FontSize="17"
                                FontWeight="SemiBold"
-                               Foreground="#1F3864"
+                               Foreground="{DynamicResource TextHeading}"
                                Margin="0,0,0,14" />
 
                     <!-- Comptador: errors -->
-                    <Border Background="#FEF0F0" CornerRadius="8"
+                    <Border Background="{DynamicResource ErrorBg}" CornerRadius="8"
                             Padding="14" Margin="0,0,0,8">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="✕" FontSize="16" FontWeight="Bold"
-                                       Foreground="#C62828" VerticalAlignment="Center" />
+                                       Foreground="{DynamicResource ErrorColor}" VerticalAlignment="Center" />
                             <TextBlock x:Name="ErrorCountText"
                                        Text="0 errors"
                                        Margin="12,0,0,0"
                                        FontSize="14"
-                                       Foreground="#C62828"
+                                       Foreground="{DynamicResource ErrorColor}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Border>
 
                     <!-- Comptador: advertiments -->
-                    <Border Background="#FFF8E8" CornerRadius="8"
+                    <Border Background="{DynamicResource WarningBg}" CornerRadius="8"
                             Padding="14" Margin="0,0,0,8">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="!" FontSize="16" FontWeight="Bold"
-                                       Foreground="#8A4A10" VerticalAlignment="Center" />
+                                       Foreground="{DynamicResource WarningColor}" VerticalAlignment="Center" />
                             <TextBlock x:Name="WarningCountText"
                                        Text="0 advertiments"
                                        Margin="12,0,0,0"
                                        FontSize="14"
-                                       Foreground="#8A4A10"
+                                       Foreground="{DynamicResource WarningColor}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Border>
 
                     <!-- Comptador: revisions manuals -->
-                    <Border Background="#EEF2F9" CornerRadius="8"
+                    <Border Background="{DynamicResource ManualBg}" CornerRadius="8"
                             Padding="14">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?" FontSize="16" FontWeight="Bold"
-                                       Foreground="#1F3864" VerticalAlignment="Center" />
+                                       Foreground="{DynamicResource ManualColor}" VerticalAlignment="Center" />
                             <TextBlock x:Name="ManualCountText"
                                        Text="0 revisions manuals"
                                        Margin="12,0,0,0"
                                        FontSize="14"
-                                       Foreground="#1F3864"
+                                       Foreground="{DynamicResource ManualColor}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
                     </Border>
@@ -172,20 +183,20 @@
                                TextWrapping="Wrap"
                                FontSize="12"
                                FontStyle="Italic"
-                               Foreground="#777777"
+                               Foreground="{DynamicResource TextSecondary}"
                                Margin="0,14,0,0" />
 
                     <TextBlock x:Name="ElementCountText"
                                Text=""
                                FontSize="12"
-                               Foreground="#999999"
+                               Foreground="{DynamicResource TextSecondary}"
                                Margin="0,16,0,0" />
 
                 </StackPanel>
             </Border>
 
             <!-- PANELL DRET: INCIDENCIES -->
-            <Border Grid.Column="1" Background="#FFFFFF" CornerRadius="10"
+            <Border Grid.Column="1" Background="{DynamicResource CardBg}" CornerRadius="10"
                     Padding="24">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="8" ShadowDepth="1"
@@ -201,7 +212,7 @@
                                Text="Incidències detectades"
                                FontSize="17"
                                FontWeight="SemiBold"
-                               Foreground="#1F3864"
+                               Foreground="{DynamicResource TextHeading}"
                                Margin="0,0,0,14"
                                Visibility="Collapsed" />
 
@@ -211,11 +222,12 @@
                                 HorizontalAlignment="Center">
                         <TextBlock Text="Avaluador d'accessibilitat WPF/XAML"
                                    FontSize="26" FontWeight="SemiBold"
-                                   Foreground="#1F3864"
+                                   Foreground="{DynamicResource TextHeading}"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,8" />
                         <TextBlock Text="Carrega un fitxer XAML o una carpeta per començar, o arrossega'l directament a aquesta finestra."
-                                   FontSize="14" Foreground="#888888"
+                                   FontSize="14"
+                                   Foreground="{DynamicResource TextSecondary}"
                                    TextWrapping="Wrap" TextAlignment="Center"
                                    MaxWidth="450"
                                    HorizontalAlignment="Center" />

@@ -252,7 +252,7 @@ namespace AccessibilityAnalyzer.App
                         Text = $"\U0001F4C1 {group.Key}",
                         FontSize = 15,
                         FontWeight = FontWeights.SemiBold,
-                        Foreground = new SolidColorBrush(Color.FromRgb(0x1F, 0x38, 0x64)),
+                        Foreground = (System.Windows.Media.Brush)Application.Current.Resources["TextHeading"],
                         Margin = new Thickness(0, 16, 0, 8),
                     });
                 }
@@ -263,7 +263,7 @@ namespace AccessibilityAnalyzer.App
                         Text = Strings.Get("RootFolder"),
                         FontSize = 15,
                         FontWeight = FontWeights.SemiBold,
-                        Foreground = new SolidColorBrush(Color.FromRgb(0x1F, 0x38, 0x64)),
+                        Foreground = (System.Windows.Media.Brush)Application.Current.Resources["TextPrimary"],
                         Margin = new Thickness(0, 16, 0, 8),
                     });
                 }
@@ -292,7 +292,7 @@ namespace AccessibilityAnalyzer.App
                     {
                         Text = displayName,
                         FontSize = 14,
-                        Foreground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33)),
+                        Foreground = (System.Windows.Media.Brush)Application.Current.Resources["IssueText"],
                         VerticalAlignment = VerticalAlignment.Center,
                     });
 
@@ -300,7 +300,7 @@ namespace AccessibilityAnalyzer.App
                     {
                         Text = $"  ({fileReport.ErrorCount} {Strings.Get("Error_p")}, {fileReport.WarningCount} {Strings.Get("Warning_p")})",
                         FontSize = 12,
-                        Foreground = new SolidColorBrush(Color.FromRgb(0x99, 0x99, 0x99)),
+                        Foreground = (System.Windows.Media.Brush)Application.Current.Resources["TextSecondary"],
                         VerticalAlignment = VerticalAlignment.Center,
                     });
 
@@ -310,7 +310,7 @@ namespace AccessibilityAnalyzer.App
                         {
                             Padding = new Thickness(10, 8, 10, 8),
                             Margin = new Thickness(12, 0, 0, 4),
-                            Background = new SolidColorBrush(Color.FromRgb(0xFA, 0xFA, 0xFA)),
+                            Background = (System.Windows.Media.Brush)Application.Current.Resources["IssueBg"],
                             CornerRadius = new CornerRadius(6),
                             Child = header,
                         };
@@ -327,7 +327,7 @@ namespace AccessibilityAnalyzer.App
                                 Text = $"{ruleGroup.Key} — {ruleGroup.Value[0].RuleName}",
                                 FontSize = 12,
                                 FontWeight = FontWeights.SemiBold,
-                                Foreground = new SolidColorBrush(Color.FromRgb(0x1F, 0x38, 0x64)),
+                                Foreground = (System.Windows.Media.Brush)Application.Current.Resources["TextHeading"],
                                 Margin = new Thickness(0, 6, 0, 4),
                             });
 
@@ -349,7 +349,7 @@ namespace AccessibilityAnalyzer.App
                                 {
                                     Text = $"  {Strings.Get("Line")} {issue.LineNumber} — {issue.Message}",
                                     FontSize = 11,
-                                    Foreground = new SolidColorBrush(Color.FromRgb(0x55, 0x55, 0x55)),
+                                    Foreground = (System.Windows.Media.Brush)Application.Current.Resources["IssueText"],
                                     TextWrapping = TextWrapping.Wrap,
                                 });
 
@@ -439,7 +439,7 @@ namespace AccessibilityAnalyzer.App
                     issues[0].Criterion),
                 FontSize = 14,
                 FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Color.FromRgb(0x1F, 0x38, 0x64)),
+                Foreground = (System.Windows.Media.Brush)Application.Current.Resources["TextHeading"],
                 Margin = new Thickness(0, 16, 0, 8),
             };
         }
@@ -467,7 +467,7 @@ namespace AccessibilityAnalyzer.App
             {
                 Text = string.Format(CultureInfo.InvariantCulture, "línia {0}", issue.LineNumber),
                 FontSize = 11,
-                Foreground = new SolidColorBrush(Color.FromRgb(0x77, 0x77, 0x77)),
+                Foreground = (System.Windows.Media.Brush)Application.Current.Resources["TextSecondary"],
                 Margin = new Thickness(12, 0, 0, 0),
             });
 
@@ -478,13 +478,13 @@ namespace AccessibilityAnalyzer.App
                 Text = issue.Message,
                 FontSize = 13,
                 TextWrapping = TextWrapping.Wrap,
-                Foreground = new SolidColorBrush(Color.FromRgb(0x33, 0x33, 0x33)),
+                Foreground = (System.Windows.Media.Brush)Application.Current.Resources["IssueText"],
                 Margin = new Thickness(0, 4, 0, 0),
             });
 
             Border card = new Border
             {
-                Background = new SolidColorBrush(Color.FromRgb(0xFA, 0xFA, 0xFA)),
+                Background = (System.Windows.Media.Brush)Application.Current.Resources["IssueBg"],
                 BorderBrush = new SolidColorBrush(color),
                 BorderThickness = new Thickness(4, 0, 0, 0),
                 Padding = new Thickness(12, 10, 12, 10),
@@ -718,6 +718,7 @@ namespace AccessibilityAnalyzer.App
                     }
                 }
             }
+
             // If a report is loaded, refresh the counters too.
             if (this._currentReport is not null)
             {
@@ -726,6 +727,27 @@ namespace AccessibilityAnalyzer.App
             else if (this._currentFolderReport is not null)
             {
                 this.DisplayFolderReport(this._currentFolderReport);
+            }
+
+            this.ThemeButton.Content = ThemeManager.Current == ThemeManager.Theme.Light
+            ? Strings.Get("DarkMode")
+            : Strings.Get("LightMode");
+        }
+
+        /// <summary>
+        /// Toggles between light and dark theme.
+        /// </summary>
+        private void OnThemeClick(object sender, RoutedEventArgs e)
+        {
+            if (ThemeManager.Current == ThemeManager.Theme.Light)
+            {
+                ThemeManager.Apply(ThemeManager.Theme.Dark);
+                this.ThemeButton.Content = Strings.Get("LightMode");
+            }
+            else
+            {
+                ThemeManager.Apply(ThemeManager.Theme.Light);
+                this.ThemeButton.Content = Strings.Get("DarkMode");
             }
         }
     }

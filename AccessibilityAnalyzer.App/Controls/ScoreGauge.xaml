@@ -21,11 +21,11 @@
                        Text="0%"
                        FontSize="42"
                        FontWeight="Bold"
-                       Foreground="#1F3864"
+                       Foreground="{DynamicResource ScoreText}"
                        HorizontalAlignment="Center" />
             <TextBlock Text="accessible"
                        FontSize="14"
-                       Foreground="#555555"
+                       Foreground="{DynamicResource TextSecondary}"
                        HorizontalAlignment="Center" />
         </StackPanel>
     </Grid>

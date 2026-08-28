@@ -170,6 +170,9 @@ namespace AccessibilityAnalyzer.Core.Localization
                     + "La puntuació (0–100) reflecteix només el que s'ha pogut verificar "
                     + "estàticament. Les revisions manuals NO penalitzen la puntuació, "
                     + "però no s'han d'ignorar.",
+
+                ["DarkMode"] = "Mode fosc",
+                ["LightMode"] = "Mode clar",
             },
 
             [Language.Castella] = new Dictionary<string, string>
@@ -281,6 +284,9 @@ namespace AccessibilityAnalyzer.Core.Localization
                     + "La puntuación (0–100) refleja solo lo que se ha podido verificar "
                     + "estáticamente. Las revisiones manuales NO penalizan la puntuación, "
                     + "pero no deben ignorarse.",
+
+                ["DarkMode"] = "Modo oscuro",
+                ["LightMode"] = "Modo claro",
             },
 
             [Language.English] = new Dictionary<string, string>
@@ -392,6 +398,9 @@ namespace AccessibilityAnalyzer.Core.Localization
                     + "The score (0–100) reflects only what could be verified "
                     + "statically. Manual review items do NOT penalise the score, "
                     + "but should not be ignored.",
+
+                ["DarkMode"] = "Dark mode",
+                ["LightMode"] = "Light mode",
             },
         };
     }

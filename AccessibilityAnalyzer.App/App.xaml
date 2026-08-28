@@ -4,6 +4,24 @@
              xmlns:local="clr-namespace:AccessibilityAnalyzer.App"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="WindowBg" Color="#F0F2F5" />
+        <SolidColorBrush x:Key="CardBg" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="CardBorder" Color="Transparent" />
+        <SolidColorBrush x:Key="TextPrimary" Color="#333333" />
+        <SolidColorBrush x:Key="TextSecondary" Color="#888888" />
+        <SolidColorBrush x:Key="TextHeading" Color="#1F3864" />
+        <SolidColorBrush x:Key="ErrorColor" Color="#C62828" />
+        <SolidColorBrush x:Key="ErrorBg" Color="#FEF0F0" />
+        <SolidColorBrush x:Key="WarningColor" Color="#8A4A10" />
+        <SolidColorBrush x:Key="WarningBg" Color="#FFF8E8" />
+        <SolidColorBrush x:Key="ManualColor" Color="#1F3864" />
+        <SolidColorBrush x:Key="ManualBg" Color="#EEF2F9" />
+        <SolidColorBrush x:Key="ButtonPrimaryBg" Color="#2B5797" />
+        <SolidColorBrush x:Key="ButtonExportBg" Color="#1E7E45" />
+        <SolidColorBrush x:Key="ButtonSecondaryBg" Color="#E8EBF0" />
+        <SolidColorBrush x:Key="ButtonSecondaryFg" Color="#333333" />
+        <SolidColorBrush x:Key="IssueBg" Color="#FAFAFA" />
+        <SolidColorBrush x:Key="IssueText" Color="#555555" />
+        <SolidColorBrush x:Key="ScoreText" Color="#1F3864" />
     </Application.Resources>
 </Application>
